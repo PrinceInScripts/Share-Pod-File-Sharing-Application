@@ -1,33 +1,41 @@
-import multer from "multer"
-import {GridFsStorage} from "multer-gridfs-storage"
-import crypto from "crypto"
+
+
+import multer from "multer";
 import path from "path"
-import dotenv from "dotenv"
-import { DB_NAME } from "../constant.js"
 
-dotenv.config();
+const upload = multer({
+  dest: "uploads/",
+  limits: { fileSize: 1024 * 1024 * 1024 }, 
+  storage: multer.diskStorage({
+    destination: "uploads/",
+    filename: (_req, file, cb) => {
+      cb(null, file.originalname);
+    },
+  }),
+  fileFilter: (_req, file, cb) => {
+    let ext = path.extname(file.originalname);
 
-
-const storage=new GridFsStorage({
-    url:`${process.env.MONGODB_URL}/${DB_NAME}`,
-    options: { useNewUrlParser: true, useUnifiedTopology: true },
-    file: (req, file) => {
-      return new Promise((resolve, reject) => {
-        crypto.randomBytes(16, (err, buf) => {
-          if (err) {
-            return reject(err);
-          }
-          const filename = buf.toString('hex') + path.extname(file.originalname);
-          const fileInfo = {
-            filename: filename,
-            bucketName: 'uploads',
-          };
-          resolve(fileInfo);
-        });
-      });
+    if (
+      ext !== ".jpg" &&
+      ext !== ".jpeg" &&
+      ext !== ".webp" &&
+      ext !== ".png" &&
+      ext !== ".mp4" &&
+      ext !== ".avi" &&
+      ext !== ".mov" &&
+      ext !== ".mkv" &&
+      ext !== ".MKV" && 
+      ext !== ".mk3d" &&
+      ext !== ".mks" &&
+      ext !== ".pdf" &&
+      ext !== ".mka" 
+    ) {
+      cb(new Error(`Unsupported file type! ${ext}`), false);
+      return;
     }
-})
 
-const upload=multer({storage})
+    cb(null, true);
+  },
+});
 
 export default upload;
