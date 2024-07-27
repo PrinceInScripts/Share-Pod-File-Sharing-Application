@@ -1,10 +1,14 @@
 import mongoose,{Schema} from "mongoose"
 
 const fileSchema=new Schema({
-    fileName:{
-        type:string,
-        required:true
-    }
+    filename: {
+        type: String,
+        required: true,
+      },
+      fileId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+      },
 },{timestamps:true});
 
-export default File=mongoose.model("File",fileSchema);
+export const File=mongoose.model("File",fileSchema);

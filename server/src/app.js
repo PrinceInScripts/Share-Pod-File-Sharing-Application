@@ -1,6 +1,8 @@
 import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
+import bodyParser from "body-parser"
+import fileRoutes from "./routes/file.routes.js"
 
 const app=express();
 
@@ -10,5 +12,10 @@ app.use(cors({
 }))
 
 app.use(cookieParser());
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use("/api/files/",fileRoutes);
 
 export {app};
