@@ -13,8 +13,7 @@ function App() {
     <>
     <Routes>
       <Route path="/" element={<Home/>}/>
-      {/* <Home />
-      <FileUpload /> */}
+      <Route path="/file-upload" element={<FileUpload/>}/>
     </Routes>
     </>
   );

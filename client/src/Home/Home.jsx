@@ -7,6 +7,7 @@ import { GoFileSubmodule } from "react-icons/go";
 import { TbUpload } from "react-icons/tb";
 import { FaFacebook, FaInstagram, FaLink, FaTwitter } from "react-icons/fa6";
 import { FaShareSquare } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 
 
@@ -28,7 +29,7 @@ const Home = () => {
           Upload, share, and access files with ease
         </p>
         <button className="bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600">
-          Get Started
+          <Link to="/file-upload">Get Started</Link>
         </button>
       </section>
 

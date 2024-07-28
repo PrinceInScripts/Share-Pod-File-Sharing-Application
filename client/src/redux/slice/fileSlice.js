@@ -1,17 +1,31 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { uploadFile, downloadFile } from './fileThunk';
+import { uploadFile } from './fileThunk';
 
 const initialState = {
-  downloadContent: Number(localStorage.getItem('downloadContent')) || 0,
-  data: JSON.parse(localStorage.getItem('data')) || {},
+  downloadContent: 0,
+  data: {},
+  path:"",
   loading: false,
   error: null,
+  uploadProgress: 0,
+  estimatedTime: null,
 };
 
 const fileSlice = createSlice({
   name: 'file',
   initialState,
-  reducers: {},
+  reducers: {
+    setUploadProgress: (state, action) => {
+      state.uploadProgress = action.payload;
+    },
+    setEstimatedTime: (state, action) => {
+      state.estimatedTime = action.payload;
+    },
+    setPath:(state,action)=>{
+       state.path=action.payload
+    },
+    
+  },
   extraReducers: (builder) => {
     builder
       .addCase(uploadFile.pending, (state) => {
@@ -21,26 +35,15 @@ const fileSlice = createSlice({
       .addCase(uploadFile.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload.data;
+        state.path=action.payload.path
         state.downloadContent = action.payload.data.downloadedContent;
       })
       .addCase(uploadFile.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      .addCase(downloadFile.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(downloadFile.fulfilled, (state, action) => {
-        state.loading = false;
-        state.data = action.payload;
-        state.downloadContent = action.payload.downloadedContent;
-      })
-      .addCase(downloadFile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
+export const { setUploadProgress, setEstimatedTime ,setPath} = fileSlice.actions;
 export default fileSlice.reducer;
