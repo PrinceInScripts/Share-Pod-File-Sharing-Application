@@ -42,7 +42,7 @@ const FileUpload = () => {
 
   return (
     <div className=" flex flex-col justify-between h-screen">
-       <header className="bg-gray-100 py-4 px-20 flex justify-between items-center">
+       <header className="bg-gray-800 py-4 px-20 flex justify-between items-center">
     <div className="flex items-center">
       
      <Link to={'/'}><SiSharex className="h-8 w-8 mr-4"/></Link> 
