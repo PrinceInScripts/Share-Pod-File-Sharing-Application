@@ -42,11 +42,11 @@ const FileUpload = () => {
 
   return (
     <div className=" flex flex-col justify-between h-screen">
-       <header className="bg-gray-800 py-4 px-20 flex justify-between items-center">
+       <header className="bg-gray-800 text-white py-4 px-20 flex justify-between items-center">
     <div className="flex items-center">
       
      <Link to={'/'}><SiSharex className="h-8 w-8 mr-4"/></Link> 
-     <Link to={'/'}><h1 className="text-lg font-bold">Share Pod</h1></Link> 
+     <Link to={'/'}><h1 className="text-lg font-bold lg:text-2xl font-serif">Share Pod</h1></Link> 
     </div>
     
   </header>
@@ -88,11 +88,7 @@ const FileUpload = () => {
             >
               {uploadProgress}%
             </div>
-            {estimatedTime && (
-              <p className="text-center mt-2 h-6 text-gray-500">
-                Estimated time remaining: {estimatedTime} seconds
-              </p>
-            )}
+            
           </div>
         )}
         <ToastContainer />
