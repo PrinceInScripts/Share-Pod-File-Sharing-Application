@@ -27,7 +27,7 @@ const Home = () => {
           Upload, share, and access files with ease
         </p>
         <button className="bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600">
-          <Link to="/file-upload">Get Started</Link>
+          <Link to="/upload">Get Started</Link>
         </button>
       </section>
 
@@ -95,7 +95,7 @@ const Home = () => {
       <section className="bg-blue-500 text-white text-center py-12 px-4">
         <h2 className="text-3xl font-bold mb-4">Ready to start sharing?</h2>
         <button className="bg-white text-blue-500 px-6 py-3 rounded-full hover:bg-gray-100">
-         <Link to={'/file-upload'}>Upload Your First File</Link> 
+         <Link to={'/upload'}>Upload Your First File</Link> 
         </button>
       </section>
 

@@ -14,7 +14,7 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/file-upload" element={<FileUpload />} />
+        <Route path="/upload" element={<FileUpload />} />
         <Route path="/preview" element={<FilePreview />} />
       </Routes>
     </>

@@ -18,7 +18,6 @@ import {
 } from "react-icons/fa";
 import { useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { SiSharex } from "react-icons/si";
 import { Link } from "react-router-dom";
 import Footer from "./Footer";
 import Header from "./HeaderComp";

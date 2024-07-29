@@ -17,6 +17,5 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(morgan('dev'))
 
-// app.use("/api/files/",fileRoutes);
 
 export {app};
