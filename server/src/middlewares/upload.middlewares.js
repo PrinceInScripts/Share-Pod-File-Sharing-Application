@@ -1,17 +1,11 @@
-
-
 import multer from "multer";
-import path from "path"
+import path from "path";
+
+const storage = multer.memoryStorage(); // ✅ Use memoryStorage
 
 const upload = multer({
-  dest: "uploads/",
-  limits: { fileSize: 1024 * 1024 * 1024 }, 
-  storage: multer.diskStorage({
-    destination: "uploads/",
-    filename: (_req, file, cb) => {
-      cb(null, file.originalname);
-    },
-  }),
+  storage: storage,
+  limits: { fileSize: 1024 * 1024 * 1024 }, // 1GB
   fileFilter: (_req, file, cb) => {
     let ext = path.extname(file.originalname);
 
@@ -24,11 +18,11 @@ const upload = multer({
       ext !== ".avi" &&
       ext !== ".mov" &&
       ext !== ".mkv" &&
-      ext !== ".MKV" && 
+      ext !== ".MKV" &&
       ext !== ".mk3d" &&
       ext !== ".mks" &&
       ext !== ".pdf" &&
-      ext !== ".mka" 
+      ext !== ".mka"
     ) {
       cb(new Error(`Unsupported file type! ${ext}`), false);
       return;
