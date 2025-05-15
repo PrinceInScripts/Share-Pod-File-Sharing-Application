@@ -46,9 +46,13 @@ const fileSchema = new Schema({
   // ✅ Status (active/inactive)
   status: {
     type: String,
-    enum: ['active', 'expired', 'deleted'],
+    enum: ['active', 'expired'],
     default: 'active',
-  }
+  },
+  shortUrl: {
+    type: String,
+    default: null,
+  },
 
 }, { timestamps: true });
 
