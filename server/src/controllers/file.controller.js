@@ -418,6 +418,57 @@ const getDownloadCount = async (req, res) => {
 }
 
 
+const resolveShareLink = async (req, res) => {
+  const { shortUrl } = req.params;
+
+  try {
+    const file = await File.findOne({ shortUrl });
+
+    if (!file) {
+      return res.status(404).json({ error: "Invalid or expired link" });
+    }
+
+    // Check expiry
+    if (file.expiresAt && new Date() > file.expiresAt) {
+      file.status = "expired";
+      await file.save();
+      return res.status(410).json({ error: "This file has expired." });
+    }
+
+    return res.status(200).json({
+      fileId: file._id,
+      name: file.name,
+      size: file.size,
+      type: file.type || "file", // fallback if missing
+      previewUrl: file.path,
+      isPasswordProtected: file.isPasswordProtected || false,
+      expiresAt: file.expiresAt || null,
+      status: file.status || "active",
+    });
+  } catch (error) {
+    console.error("Error resolving share link:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+const verifyFilePassword = async (req, res) => {
+  const { fileId, password } = req.body;
+
+  try {
+    const file = await File.findById(fileId);
+    if (!file || !file.isPasswordProtected)
+      return res.status(400).json({ error: "File not protected or not found" });
+
+    const isMatch = await bcrypt.compare(password, file.password);
+    if (!isMatch) return res.status(401).json({ error: "Incorrect password" });
+
+    return res.status(200).json({ message: "Password verified" });
+  } catch (error) {
+    console.error("Password verification error:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
 
 
 export {
@@ -433,5 +484,7 @@ export {
     generateShareShortenLink,
     sendLinkEmail,
     generateQR,
-    getDownloadCount
+    getDownloadCount,
+    resolveShareLink,
+    verifyFilePassword
 }
