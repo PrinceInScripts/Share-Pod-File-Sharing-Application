@@ -60,6 +60,17 @@ const registerUser = async (req, res) => {
   }
 };
 
+// logoutUser
+const logoutUser = async (req, res) => {
+  try {
+    res.clearCookie("token");
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    console.error("Error during logout:", error);
+    res.status(500).json({ message: "Error during logout" });
+  }
+};
+
 const getUsers = async (req, res) => {
   try {
     const users = await User.find();
@@ -192,5 +203,6 @@ export {
   deleteUser,
   loginUser,
   verifyToken,
-  generateUniqueId
+  generateUniqueId,
+  logoutUser,
 };
