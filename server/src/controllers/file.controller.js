@@ -53,6 +53,7 @@ const uploadFiles = async (req, res) => {
     }
     const fileUrl = s3Result.Location;
     console.log("File uploaded to S3:", fileUrl);
+     const shortCode = shortid.generate();
 
 
     const fileObj = { 
@@ -64,7 +65,8 @@ const uploadFiles = async (req, res) => {
        expiresAt: expiresAt
         ? new Date(Date.now() + expiresAt * 3600000)
         : new Date(Date.now() + 10 * 24 * 3600000), // default 10 days
-      status: 'active'
+      status: 'active',
+      shortUrl: `${process.env.BASE_URL}/f/${shortCode}`,
     };
     if (isPassword === 'true') {
         const hashedPassword = await bcrypt.hash(password, 10);
