@@ -6,6 +6,6 @@ import { downloadFile, uploadFiles } from "../controllers/file.controller.js";
 const router=Router();
 
 router.post("/upload",upload.single('file'),uploadFiles);
-router.get("/file/:fileId",downloadFile);
+router.get("/download/:fileId",downloadFile);
 
 export default router;

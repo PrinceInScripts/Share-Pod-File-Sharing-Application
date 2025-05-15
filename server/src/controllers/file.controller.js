@@ -91,15 +91,73 @@ const uploadFiles = async (req, res) => {
 
 
 
-const downloadFile=async (req,res)=>{
+// const downloadFile=async (req,res)=>{
+//     try {
+//         const file=await File.findById(req.params.fileId);
+//         file.downloadedContent++;
+//         await file.save();
+//         res.download(file.path,file.name);
+//     } catch (error) {
+//         console.log(error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// }
+
+const downloadFile = async (req, res) => {
+    const { fileId } = req.params;
+    const { password } = req.body;
     try {
-        const file=await File.findById(req.params.fileId);
-        file.downloadedContent++;
-        await file.save();
-        res.download(file.path,file.name);
-    } catch (error) {
-        console.log(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+        const file = await File.findById(fileId);
+        if (!file) {
+            return res.status(404).json({ error: 'File not found' });
+        }
+
+         if (file.status !== 'active') {
+          return res.status(403).json({ error: 'This file is not available for download' });
+        }
+
+        if (file.expiresAt && new Date(file.expiresAt) < new Date()) {
+      return res.status(410).json({ error: 'This file has expired' });
+    }
+
+       if (file.isPasswordProtected) {
+      if (!password) {
+        return res.status(401).json({ error: 'Password required' });
+      }
+
+      const isMatch = await bcrypt.compare(password, file.password);
+      if (!isMatch) {
+        return res.status(403).json({ error: 'Incorrect password' });
+      }
+    }
+
+    const s3 = new AWS.S3({
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      region: process.env.AWS_REGION
+    });
+
+    const key = `file-share-app/${file.name}`;
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: key,
+      Expires: 24 * 60 * 60,
+    };
+
+    const downloadUrl = s3.getSignedUrl('getObject', params);
+    if (!downloadUrl) {
+        return res.status(500).json({ error: 'Error generating download URL' });
+    }
+
+    file.downloadedContent++;
+    await file.save();
+
+    return res.status(200).json({ downloadUrl });
+
+       
+    }catch (error) {
+        console.error("Download error:", error);
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 }
 
