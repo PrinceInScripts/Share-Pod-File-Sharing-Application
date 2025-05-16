@@ -54,8 +54,10 @@ const authSlice = createSlice({
         localStorage.setItem('user', JSON.stringify(action.payload));
       })
       .addCase(loginUser.rejected, (state, action) => {
+        console.log(action);
+        
         state.loading = false;
-        state.error = action.payload?.error || 'Login failed';
+        state.error = action.payload || 'Login failed';
       })
         // updateUser
       .addCase(updateUser.pending,(state)=>{

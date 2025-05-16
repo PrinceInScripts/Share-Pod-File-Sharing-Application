@@ -7,7 +7,6 @@ import axiosInstance from '../../../config/axiosInstance';
 export const registerUser = createAsyncThunk('auth/register', async (formData, { rejectWithValue }) => {
   try {
     const res = await axiosInstance.post('/users/register', formData);
-    console.log(res);
     return res.data;
   } catch (err) {
     return rejectWithValue(err.response.data.message || 'Registration failed');
@@ -17,10 +16,10 @@ export const registerUser = createAsyncThunk('auth/register', async (formData, {
 // LOGIN
 export const loginUser = createAsyncThunk('auth/login', async (formData, { rejectWithValue }) => {
   try {
-    const res = await axios.post('/login', formData);
+    const res = await axiosInstance.post('/users/login', formData);
     return res.data;
   } catch (err) {
-    return rejectWithValue(err.response.data);
+    return rejectWithValue(err.response.data.message || 'Login failed');
   }
 });
 
@@ -28,7 +27,7 @@ export const loginUser = createAsyncThunk('auth/login', async (formData, { rejec
 // updateUser
 export const updateUser = createAsyncThunk('auth/updateUser', async ({ userId, formData }, { rejectWithValue }) => {
   try {
-    const res = await axios.put(`/user/${userId}`, formData);
+    const res = await axiosInstance.put(`/user/${userId}`, formData);
     return res.data;
   } catch (err) {
     return rejectWithValue(err.response.data);
@@ -38,7 +37,7 @@ export const updateUser = createAsyncThunk('auth/updateUser', async ({ userId, f
 // deleteUser
 export const deleteUser = createAsyncThunk('auth/deleteUser', async (userId, { rejectWithValue }) => {
   try {
-    await axios.delete(`/user/${userId}`);
+    await axiosInstance.delete(`/user/${userId}`);
     return userId;
   } catch (err) {
     return rejectWithValue(err.response.data);
