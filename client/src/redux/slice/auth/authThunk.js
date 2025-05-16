@@ -43,3 +43,8 @@ export const deleteUser = createAsyncThunk('auth/deleteUser', async (userId, { r
     return rejectWithValue(err.response.data);
   }
 });
+
+
+
+
+

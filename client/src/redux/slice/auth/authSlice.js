@@ -1,12 +1,12 @@
 // src/features/auth/authSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 import { registerUser, loginUser,updateUser,deleteUser } from './authThunk';
-
+const stored = localStorage.getItem('user');
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    user: null,
-    isLoggedIn: false,
+    user: stored ? JSON.parse(stored) : null,
+    isLoggedIn: !!stored,
     loading: false,
     error: null,
   },
@@ -49,7 +49,9 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        console.log(action);
+        
+        state.user = action.payload.user;
         state.isLoggedIn = true;
         localStorage.setItem('user', JSON.stringify(action.payload));
       })
