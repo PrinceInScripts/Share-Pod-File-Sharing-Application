@@ -1,6 +1,6 @@
 // src/features/auth/authSlice.js
 import { createSlice } from '@reduxjs/toolkit';
-import { registerUser, loginUser,updateUser,deleteUser } from './authThunks';
+import { registerUser, loginUser,updateUser,deleteUser } from './authThunk';
 
 const authSlice = createSlice({
   name: 'auth',
@@ -39,7 +39,7 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.error || 'Registration failed';
+        state.error = action.payload || 'Registration failed';
       })
 
       // LOGIN

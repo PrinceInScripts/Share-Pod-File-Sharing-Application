@@ -39,10 +39,15 @@ const registerUser = async (req, res) => {
     if (!emailRegex.test(email)) {
       return res.status(400).json({ message: "Invalid email format." });
     }
-    const username = `${fullname.substring(0, 5)}${generateUniqueId().substring(
-      0,
-      5
-    )}`;
+ const cleanedFullname = fullname.trim().replace(/\s+/g, '');
+const username = `${cleanedFullname.substring(0, 4).toLowerCase()}${generateUniqueId().substring(0, 5)}`;
+
+
+   
+
+    const pic=Math.floor(Math.random()*100)+1;
+    const profilePic=`https://avatar.iran.liara.run/public/${pic}`
+
 
 
     const newUser = new User({
@@ -50,6 +55,7 @@ const registerUser = async (req, res) => {
       username,
       email,
         password,
+      profilePic
     });
 
     await newUser.save();

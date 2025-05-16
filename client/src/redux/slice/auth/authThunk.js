@@ -1,14 +1,16 @@
 // src/features/auth/authThunks.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import axiosInstance from '../../../config/axiosInstance';
 
 // REGISTER
 export const registerUser = createAsyncThunk('auth/register', async (formData, { rejectWithValue }) => {
   try {
-    const res = await axios.post('/register', formData);
+    const res = await axiosInstance.post('/users/register', formData);
+    console.log(res);
     return res.data;
   } catch (err) {
-    return rejectWithValue(err.response.data);
+    return rejectWithValue(err.response.data.message || 'Registration failed');
   }
 });
 

@@ -14,7 +14,7 @@ import {
   getDownloadCount,
   resolveShareLink,
   verifyFilePassword,
-} from "./fileThunks";
+} from "./fileThunk";
 
 const fileSlice = createSlice({
   name: "file",

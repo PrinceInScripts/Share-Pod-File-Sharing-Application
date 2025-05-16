@@ -3,6 +3,8 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 import bodyParser from "body-parser"
 import morgan from "morgan"
+import dotenv from "dotenv"
+dotenv.config();
 
 const app=express();
 
