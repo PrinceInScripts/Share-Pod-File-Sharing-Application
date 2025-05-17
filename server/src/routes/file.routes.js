@@ -1,6 +1,6 @@
 import express, { Router } from "express"
 import upload from "../middlewares/upload.middlewares.js";
-import { deleteFile, downloadFile, generateQR, generateShareShortenLink, getDownloadCount, getFileDetails, resolveShareLink, searchFiles, sendLinkEmail, showUserFiles, updateFileExpiry, updateFilePassword, updateFileStatus, uploadFiles, verifyFilePassword ,  } from "../controllers/file.controller.js";
+import { deleteFile, downloadFile, generateQR, generateShareShortenLink, getDownloadCount, getFileDetails, getUserFiles, resolveShareLink, searchFiles, sendLinkEmail, showUserFiles, updateFileExpiry, updateFilePassword, updateFileStatus, uploadFiles, verifyFilePassword ,  } from "../controllers/file.controller.js";
 
 
 const router=Router();
@@ -24,6 +24,8 @@ router.get('getDownloadCount/:fileId', getDownloadCount);
 
 router.get('/resolveShareLink/:shortUrl', resolveShareLink);
 router.post('/verifyFilePassword', verifyFilePassword);
+
+router.get('/getUserFiles/:userId', getUserFiles);
 
 
 

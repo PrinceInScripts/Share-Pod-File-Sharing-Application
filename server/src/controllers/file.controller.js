@@ -5,6 +5,7 @@ import AWS from "aws-sdk";
 import nodemailer from "nodemailer";
 import shortid from "shortid";
 import QRCode from "qrcode";
+import { User } from '../models/user.models.js';
 
 
 
@@ -14,9 +15,7 @@ const uploadFiles = async (req, res) => {
         return res.status(400).json({ error: 'No files uploaded' });
     }
 
-    const { isPassword, password, hasExpiry, expiresAt, customFileName } = req.body;
-    console.log(customFileName);
-    
+    const { isPassword, password, hasExpiry, expiresAt, customFileName,userId } = req.body;
 
     try {
 
@@ -67,6 +66,7 @@ const uploadFiles = async (req, res) => {
         : new Date(Date.now() + 10 * 24 * 3600000), // default 10 days
       status: 'active',
       shortUrl: `${process.env.BASE_URL}/f/${shortCode}`,
+      createdBy: userId,
     };
     if (isPassword === 'true') {
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -78,6 +78,22 @@ const uploadFiles = async (req, res) => {
 
     const newFile = new File(fileObj);
     const savedFile = await newFile.save();
+
+    const user= await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    user.totalUploads += 1;
+    // check the file type and increment the respective count
+    if (file.mimetype.startsWith('image/')) {
+      user.imageCount += 1;
+    } else if (file.mimetype.startsWith('video/')) {
+      user.videoCount += 1;
+    } else if (file.mimetype.startsWith('application/')) {
+      user.documentCount += 1;
+    }
+    await user.save();
 
     return res.status(201).json({
       message: "File uploaded successfully",
@@ -139,6 +155,13 @@ const downloadFile = async (req, res) => {
 
     file.downloadedContent++;
     await file.save();
+
+    // Update user download count
+    const user = await User.findById(file.createdBy);
+    if (user) {
+      user.totalDownloads += 1;
+      await user.save();
+    }
 
     return res.status(200).json({ downloadUrl });
 
@@ -471,6 +494,24 @@ const verifyFilePassword = async (req, res) => {
   }
 };
 
+const getUserFiles = async (req, res) => {
+
+  const { userId } = req.params;
+  try {
+    const files = await File.find({ createdBy: userId });
+
+    if (!files.length) {
+      return res.status(404).json({ message: 'No files found' });
+    }
+
+    return res.status(200).json(files);
+
+  } catch (error) {
+    console.error("List files error:", error);
+    return res.status(500).json({ error: "Error fetching user files" });
+  }
+}
+
 
 
 export {
@@ -488,5 +529,6 @@ export {
     generateQR,
     getDownloadCount,
     resolveShareLink,
-    verifyFilePassword
+    verifyFilePassword,
+    getUserFiles
 }

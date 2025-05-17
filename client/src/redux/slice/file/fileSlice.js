@@ -14,6 +14,7 @@ import {
   getDownloadCount,
   resolveShareLink,
   verifyFilePassword,
+  getUserFiles,
 } from "./fileThunk";
 
 const fileSlice = createSlice({
@@ -201,7 +202,22 @@ const fileSlice = createSlice({
       .addCase(verifyFilePassword.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      // get files
+      .addCase(getUserFiles.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserFiles.fulfilled, (state, action) => {
+        state.loading = false;
+        state.files = action.payload;
+      })
+      .addCase(getUserFiles.rejected, (state, action) => {
+        state.loading = false;        
+        state.error = action.payload;
       });
+
+
   },
 });
 

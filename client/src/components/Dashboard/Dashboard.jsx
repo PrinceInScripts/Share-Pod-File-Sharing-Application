@@ -5,10 +5,13 @@ import Sidebar from "./SideBar";
 import StatsGrid from "./StatesGrid";
 import UserProfile from "./UserProfile";
 import UploadPage from "./UploadPage";
+import Setting from "./Setting";
+import FileShow from "./FileShow";
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("home");
 
   useEffect(() => {
     const timeout = setTimeout(() => setLoading(false), 1500);
@@ -25,17 +28,25 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen flex bg-gray-100">
-      <Sidebar sidebarOpen={sidebarOpen} />
+      <Sidebar sidebarOpen={sidebarOpen} setActiveTab={setActiveTab} activeTab={activeTab}/>
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden" onClick={() => setSidebarOpen(false)} />
       )}
       <div className="flex flex-col flex-1">
         <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <main className="flex-1 p-6">
+          {activeTab === "upload" && <UploadPage />}
+          {activeTab === "profile" && <UserProfile />}
+          {activeTab === "settings" && <UserProfile />}
+          {activeTab === "logout" && <h1 className="text-3xl font-bold text-gray-800">Logging out...</h1>}
+          {activeTab === "home" && 
+
+           <>
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Dashboard Overview</h2>
           <StatsGrid />
-          <h3 className="mt-6 text-xl">Users</h3>
-          <UsersTable />
+          <FileShow />
+         </>
+           }
         </main>
       </div>
     </div>

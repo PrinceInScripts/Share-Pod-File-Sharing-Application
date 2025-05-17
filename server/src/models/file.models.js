@@ -53,6 +53,12 @@ const fileSchema = new Schema({
     type: String,
     default: null,
   },
+  // ✅ User ID
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
 
 }, { timestamps: true });
 

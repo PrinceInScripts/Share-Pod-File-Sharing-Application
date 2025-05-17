@@ -5,11 +5,13 @@ import { getUser } from "../../redux/slice/auth/authThunk";
 const StatsGrid = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
+  console.log(user);
+  
   const hasFetched = useRef(false);
 
   useEffect(() => {
-    if (user && user._id && !hasFetched.current) {
-      dispatch(getUser(user._id));
+    if (user && user.id && !hasFetched.current) {
+      dispatch(getUser(user.id));
       hasFetched.current = true;
     }
   }, [user, dispatch]);

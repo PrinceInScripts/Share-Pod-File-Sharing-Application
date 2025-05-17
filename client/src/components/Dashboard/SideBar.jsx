@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 
-const Sidebar = ({ sidebarOpen }) =>{
-      const [isHome, setIsHome] = useState(true);
-      const [isUpload, setIsUpload] = useState(false);
-      const [isSettings, setIsSettings] = useState(false);
-      const [isLogout, setIsLogout] = useState(false);
-      const [isFilePreview, setIsFilePreview] = useState(false);
+const Sidebar = ({ sidebarOpen,setActiveTab,activeTab }) =>{
+    const handleTabClick = (tab) => {
+        setActiveTab(tab);
+    };
+    const tabs = [
+        { name: "Home", icon: "🏠", id: "home" },
+        { name: "Upload Files", icon: "📤", id: "upload" },
+        { name: "Settings", icon: "⚙️", id: "settings" },
+        { name: "Logout", icon: "🚪", id: "logout" },
+    ];
+ 
 
-      
+
 
   return (
     <div
@@ -18,38 +23,18 @@ const Sidebar = ({ sidebarOpen }) =>{
     <div className="flex flex-col h-full">
       <div className="px-6 py-4 text-2xl font-bold border-b">Dashboard</div>
       <nav className="flex-1 px-4 py-6 space-y-4">
-        <a onClick={
-          () => {
-            setIsHome(true);
-            setIsUpload(false);
-            setIsSettings(false);
-            setIsLogout(false);
-          }
-        } href="#" className="block px-4 py-2 rounded hover:bg-gray-200">Home</a>
-        <a onClick={
-          () => {
-            setIsHome(false);
-            setIsUpload(true);
-            setIsSettings(false);
-            setIsLogout(false);
-          }
-        } href="#" className="block px-4 py-2 rounded hover:bg-gray-200">Upload Files</a>
-        <a onClick={
-          () => {
-            setIsHome(false);
-            setIsUpload(false);
-            setIsSettings(true);
-            setIsLogout(false);
-          }
-        } href="#" className="block px-4 py-2 rounded hover:bg-gray-200">Settings</a>
-        <a onClick={
-          () => {
-            setIsHome(false);
-            setIsUpload(false);
-            setIsSettings(false);
-            setIsLogout(true);
-          }
-        } href="#" className="block px-4 py-2 rounded hover:bg-gray-200">Logout</a>
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => handleTabClick(tab.id)}
+            className={`flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100 w-full ${
+              activeTab === tab.id ? "bg-gray-200 w-full" : ""
+            }`}
+          >
+            <span className="mr-3">{tab.icon}</span>
+            <span className="text-lg font-medium">{tab.name}</span>
+          </button>
+        ))}
       </nav>
     </div>
   </div>
