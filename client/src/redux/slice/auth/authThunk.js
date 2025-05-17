@@ -44,6 +44,20 @@ export const deleteUser = createAsyncThunk('auth/deleteUser', async (userId, { r
   }
 });
 
+//getUser
+export const getUser = createAsyncThunk('auth/getUser', async (userId, { rejectWithValue }) => {
+  try {
+    console.log(userId);
+    
+    const res = await axiosInstance.get(`users/user/${userId}`);
+    console.log(res);
+    
+    return res.data;
+  } catch (err) {
+    return rejectWithValue(err.response.data);
+  }
+});
+
 
 
 
