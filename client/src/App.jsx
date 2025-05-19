@@ -10,6 +10,8 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import FileDownload from "./FIleDownload";
 import { useDispatch } from "react-redux";
 import { loadUserFromStorage } from "./redux/slice/auth/authSlice";
+import RequireAuth from "./components/Auth/RequireAuth";
+import NoRequireAuth from "./components/Auth/NotRequireAuth";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -24,10 +26,16 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/dashboard" element={<Dashboard/>} />
-         <Route path="/f/:code" element={<FileDownload />} />
+        <Route element={<RequireAuth />}>
+    <Route path="/dashboard" element={<Dashboard />} />
+    <Route path="/f/:code" element={<FileDownload />} />
+  </Route>
+
+  {/* Non-auth-only Routes */}
+  <Route element={<NoRequireAuth />}>
+    <Route path="/login" element={<Login />} />
+    <Route path="/signup" element={<Signup />} />
+  </Route>
       </Routes>
     </>
   );
