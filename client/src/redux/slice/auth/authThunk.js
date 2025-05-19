@@ -25,9 +25,10 @@ export const loginUser = createAsyncThunk('auth/login', async (formData, { rejec
 
 
 // updateUser
-export const updateUser = createAsyncThunk('auth/updateUser', async ({ userId, formData }, { rejectWithValue }) => {
+export const updateUser = createAsyncThunk('auth/updateUser', async ({ userId, username }, { rejectWithValue }) => {
   try {
-    const res = await axiosInstance.put(`/user/${userId}`, formData);
+ 
+    const res = await axiosInstance.put(`/users/user/${userId}`, {username});
     return res.data;
   } catch (err) {
     return rejectWithValue(err.response.data);
@@ -37,7 +38,7 @@ export const updateUser = createAsyncThunk('auth/updateUser', async ({ userId, f
 // deleteUser
 export const deleteUser = createAsyncThunk('auth/deleteUser', async (userId, { rejectWithValue }) => {
   try {
-    await axiosInstance.delete(`/user/${userId}`);
+    await axiosInstance.delete(`/users/user/${userId}`);
     return userId;
   } catch (err) {
     return rejectWithValue(err.response.data);

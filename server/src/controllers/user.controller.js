@@ -104,13 +104,17 @@ const updateUser = async (req, res) => {
   const { userId } = req.params;
   const { username } = req.body;
 
-  try {
-    const updatedFields = { username };
- 
 
-    const updatedUser = await User.findByIdAndUpdate(userId, updatedFields, {
-      new: true,
-    });
+  try {
+    if (!username) {
+      return res.status(400).json({ message: "Username is required" });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { username },
+      { new: true }
+    );
 
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });

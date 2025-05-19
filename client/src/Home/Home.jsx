@@ -1,6 +1,5 @@
 import React from "react";
 // import "../index.css";
-import FileUpload from "../components/FileUpload";
 import { IoMdCloudUpload } from "react-icons/io";
 import { SiFsecure } from "react-icons/si";
 import { GoFileSubmodule } from "react-icons/go";

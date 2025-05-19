@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Header from "./Header";
-import UsersTable from "./UsersTable";
 import Sidebar from "./SideBar";
 import StatsGrid from "./StatesGrid";
 import UserProfile from "./UserProfile";
 import UploadPage from "./FileUpload/UploadPage";
-import Setting from "./Setting";
 import FileShow from "./FileShow";
 
 const Dashboard = () => {
