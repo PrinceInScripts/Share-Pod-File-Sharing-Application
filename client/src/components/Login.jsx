@@ -39,7 +39,7 @@ const Login = () => {
         toast.error(result.payload);
       } else {
         toast.success('Login successful');
-        navigate('/');
+        navigate('/dashboard');
       }
     } catch (error) {
       toast.error('Error During Login');
@@ -101,14 +101,14 @@ const Login = () => {
                   <span className="ml-3">{loading ? "Logging..." : "Login"}</span>
                 </button>
                 <p className="mt-6 text-xs text-gray-600 text-center">
-                  I agree to abide by templatana's{' '}
-                  <a href="#" className="border-b border-gray-500 border-dotted">
-                    Terms of Service
-                  </a>{' '}
-                  and its{' '}
-                  <a href="#" className="border-b border-gray-500 border-dotted">
-                    Privacy Policy
+                   Don't have an account?{' '}
+                  <a
+                    href="/signup"
+                    className="border-b border-gray-500 border-dotted text-primary hover:text-primary font-semibold"
+                  >
+                    Sign Up
                   </a>
+                 
                 </p>
               </div>
             </div>

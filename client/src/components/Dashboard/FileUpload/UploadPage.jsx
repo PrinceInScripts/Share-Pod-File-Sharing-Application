@@ -1,25 +1,20 @@
 import React, { useRef, useState } from "react";
-import "./FileUploader.css"; // Make sure to copy your CSS into this file
+import "./FileUploader.css";
 import { useDispatch, useSelector } from "react-redux";
 import { uploadFile } from "../../../redux/slice/file/fileThunk";
-import { toast } from 'react-toastify';
-
+import { toast } from "react-toastify";
 
 const FileUploader = () => {
   const fileInputRef = useRef(null);
   const dispatch = useDispatch();
-  const {loading} = useSelector((state) => state.file);
+  const { loading } = useSelector((state) => state.file);
   const { user } = useSelector((state) => state.auth);
 
-
   const [files, setFiles] = useState([]);
-  const [notification, setNotification] = useState("");
-  const [showNotification, setShowNotification] = useState(false);
   const [enablePassword, setEnablePassword] = useState(false);
   const [password, setPassword] = useState("");
   const [enableExpiry, setEnableExpiry] = useState(false);
   const [expiryDate, setExpiryDate] = useState("");
-
 
   const handleBrowseClick = () => {
     fileInputRef.current.click();
@@ -30,9 +25,7 @@ const FileUploader = () => {
       (file) => file.size <= 10 * 1024 * 1024
     );
     setFiles((prev) => [...prev, ...newFiles]);
-    setNotification("File uploaded successfully!");
-    setShowNotification(true);
-    setTimeout(() => setShowNotification(false), 3000);
+    toast.success("File(s) added!");
   };
 
   const handleFileInputChange = (e) => {
@@ -57,11 +50,12 @@ const FileUploader = () => {
 
   const removeFile = (index) => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
+    toast.info("File removed");
   };
 
   const totalSize = files.reduce((acc, file) => acc + file.size, 0);
 
-   const handleUpload = async () => {
+  const handleUpload = async () => {
     if (files.length === 0) {
       toast.error("Please upload at least one file.");
       return;
@@ -69,28 +63,26 @@ const FileUploader = () => {
 
     const formData = new FormData();
     files.forEach((file) => formData.append("files", file));
-    formData.append("userId", user._id?user._id:user.id); // Replace with dynamic user ID if available
+    formData.append("userId", user._id ? user._id : user.id);
     formData.append("hasExpiry", enableExpiry);
+
     if (enableExpiry && expiryDate) {
-      const hours = Math.ceil((new Date(expiryDate) - new Date()) / (1000 * 60 * 60));
+      const hours = Math.ceil(
+        (new Date(expiryDate) - new Date()) / (1000 * 60 * 60)
+      );
       formData.append("expiresAt", hours);
     }
+
     formData.append("isPassword", enablePassword);
     if (enablePassword && password) {
       formData.append("password", password);
     }
 
     try {
-      const result = await dispatch(uploadFile(formData)).unwrap();
-    //  toast.success(`files uploaded successfully!`);
-      setNotification("Files uploaded successfully!");
-      setShowNotification(true);
+      await dispatch(uploadFile(formData)).unwrap();
+      toast.success("Files uploaded successfully!");
       setFiles([]);
-      setTimeout(() => setShowNotification(false), 3000);
-      // refresh the page or redirect to another page
       window.location.reload();
-
-
     } catch (err) {
       toast.error(err?.error || "Upload failed");
     }
@@ -212,64 +204,60 @@ const FileUploader = () => {
       )}
 
       {files.length === 0 ? (
-  <div className="empty-state">No files uploaded yet</div>
-) : (
-  <div className="file-previews">
-    {files.map((file, index) => (
-      <div className="file-preview" key={index}>
-        <div className="preview-img-container">
-          {file.type.startsWith("image") ? (
-            <img
-              src={URL.createObjectURL(file)}
-              alt={file.name}
-              className="preview-img"
-            />
-          ) : file.type.startsWith("video") ? (
-            <video
-              src={URL.createObjectURL(file)}
-              className="preview-video"
-              controls
-              muted
-              width="100"
-              height="80"
-            />
-          ) : (
-            <div className="file-icon">📄</div>
-          )}
+        <div className="empty-state">No files uploaded yet</div>
+      ) : (
+        <div className="file-previews">
+          {files.map((file, index) => (
+            <div className="file-preview" key={index}>
+              <div className="preview-img-container">
+                {file.type.startsWith("image") ? (
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt={file.name}
+                    className="preview-img"
+                  />
+                ) : file.type.startsWith("video") ? (
+                  <video
+                    src={URL.createObjectURL(file)}
+                    className="preview-video"
+                    controls
+                    muted
+                    width="100"
+                    height="80"
+                  />
+                ) : (
+                  <div className="file-icon">📄</div>
+                )}
+              </div>
+              <div className="file-info">
+                <div className="file-name" title={file.name}>
+                  {(() => {
+                    const dotIndex = file.name.lastIndexOf(".");
+                    const name = file.name.slice(0, dotIndex);
+                    const ext = file.name.slice(dotIndex);
+                    return name.length > 30
+                      ? `${name.slice(0, 27)}...${ext}`
+                      : file.name;
+                  })()}
+                </div>
+                <div className="file-size">
+                  {file.size > 1024 * 1024
+                    ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
+                    : `${(file.size / 1024).toFixed(2)} KB`}
+                </div>
+                <div className="file-actions">
+                  <button
+                    className="remove-btn"
+                    onClick={() => removeFile(index)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-        <div className="file-info">
-          <div className="file-name" title={file.name}>
-            {(() => {
-              const dotIndex = file.name.lastIndexOf(".");
-              const name = file.name.slice(0, dotIndex);
-              const ext = file.name.slice(dotIndex);
-              return name.length > 30
-                ? `${name.slice(0, 27)}...${ext}`
-                : file.name;
-            })()}
-          </div>
-          <div className="file-size">
-            {
-              file.size>1024*1024
-              ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
-                :`${(file.size / 1024).toFixed(2)} KB`
-              
-            }
-          </div>
-          <div className="file-actions">
-            <button
-              className="remove-btn"
-              onClick={() => removeFile(index)}
-            >
-              Remove
-            </button>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-)}
-
+      )}
 
       <div className="upload-action">
         <button
@@ -280,13 +268,6 @@ const FileUploader = () => {
           {loading ? "Uploading..." : "Upload"}
         </button>
       </div>
-
-      {showNotification && (
-        <div className={`upload-notification show`}>
-          <span>{notification}</span>
-          <div className="notification-progress"></div>
-        </div>
-      )}
     </div>
   );
 };

@@ -106,14 +106,14 @@ const Signup = () => {
                   <span className="ml-3">{loading ? "Signing Up..." : "Sign Up"}</span>
                 </button>
                 <p className="mt-6 text-xs text-gray-600 text-center">
-                  I agree to abide by templatana's{' '}
-                  <a href="#" className="border-b border-gray-500 border-dotted">
-                    Terms of Service
-                  </a>{' '}
-                  and its{' '}
-                  <a href="#" className="border-b border-gray-500 border-dotted">
-                    Privacy Policy
+                  Already have an account?{' '}
+                  <a
+                    href="/login"
+                    className="border-b border-gray-500 border-dotted text-primary hover:text-primary font-semibold"
+                  >
+                    Login
                   </a>
+                 
                 </p>
               </div>
             </div>
