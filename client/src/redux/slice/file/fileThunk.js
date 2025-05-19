@@ -7,14 +7,15 @@ import axiosInstance from "../../../config/axiosInstance";
 axios.defaults.withCredentials = true;
 
 // UPLOAD FILE
-export const uploadFile = createAsyncThunk("file/upload", async (formData, { rejectWithValue }) => {
-  try {
-    const res = await axiosInstance.post("/upload", formData);
-    return res.data;
-  } catch (err) {
-    return rejectWithValue(err.response?.data);
+export const uploadFile = createAsyncThunk("file/upload",async (formData, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.post("/files/upload", formData);
+      return res.data; // returns { message, fileIds }
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
   }
-});
+);
 
 // GET FILE DETAILS
 export const getFileDetails = createAsyncThunk("file/getDetails", async (fileId, { rejectWithValue }) => {

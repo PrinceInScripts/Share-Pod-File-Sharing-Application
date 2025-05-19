@@ -6,106 +6,90 @@ import nodemailer from "nodemailer";
 import shortid from "shortid";
 import QRCode from "qrcode";
 import { User } from '../models/user.models.js';
+import path from "path";
 
 
 
 const uploadFiles = async (req, res) => {
+  if (!req.files || req.files.length === 0) {
+    return res.status(400).json({ error: 'No files uploaded' });
+  }
 
-    if (!req.file) {
-        return res.status(400).json({ error: 'No files uploaded' });
-    }
+  const { isPassword, password, hasExpiry, expiresAt, userId } = req.body;
 
-    const { isPassword, password, hasExpiry, expiresAt, customFileName,userId } = req.body;
-
-    try {
-
+  try {
     const s3 = new AWS.S3({
       accessKeyId: process.env.AWS_ACCESS_KEY_ID,
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      region: process.env.AWS_REGION
+      region: process.env.AWS_REGION,
     });
-    const file = req.file;
 
-    // Extract extension from original filename
-    const originalName = file.originalname;
-    const extension = originalName.substring(originalName.lastIndexOf('.')) || '';
+    const savedFiles = [];
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: 'User not found' });
 
-    // Use custom filename or fallback to original name (make sure to append extension)
-    const finalFileName = customFileName
-      ? customFileName.trim() + extension
-      : originalName;
-      console.log(finalFileName);
-      
+    for (const file of req.files) {
+      const originalName = file.originalname;
+      const extension = path.extname(originalName);
+      const uniqueSuffix = shortid.generate();
+      const finalFileName = `${originalName.replace(/\s+/g, '_')}_${uniqueSuffix}${extension}`;
 
-         const params = {
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Key: `file-share-app/${finalFileName}`, // <-- Folder path
-      Body: file.buffer, // ✅ Important: actual file content
-      ContentType: file.mimetype,
-      // ACL: 'public-read', // ✅ Important: set the file to be publicly readable
-    };
- 
+      const params = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: `file-share-app/${finalFileName}`,
+        Body: file.buffer,
+        ContentType: file.mimetype,
+      };
 
-    const s3Result = await s3.upload(params).promise();
-    if (s3Result.error) {
-        return res.status(500).json({ error: 'Error uploading file to S3' });
-    }
-    const fileUrl = s3Result.Location;
-    console.log("File uploaded to S3:", fileUrl);
-     const shortCode = shortid.generate();
+      const s3Result = await s3.upload(params).promise();
+      const fileUrl = s3Result.Location;
+      const shortCode = shortid.generate();
 
+      const fileObj = {
+        path: fileUrl,
+        name: finalFileName,
+        type: file.mimetype,
+        size: file.size,
+        hasExpiry: hasExpiry === 'true',
+        expiresAt: hasExpiry === 'true'
+          ? new Date(Date.now() + expiresAt * 3600000)
+          : new Date(Date.now() + 10 * 24 * 3600000),
+        status: 'active',
+        shortUrl: `${process.env.BASE_URL}/f/${shortCode}`,
+        createdBy: userId,
+      };
 
-    const fileObj = { 
-      path: fileUrl,
-      name: finalFileName,
-      type: req.file.mimetype,
-      size: req.file.size,
-      hasExpiry: hasExpiry === 'true',
-       expiresAt: expiresAt
-        ? new Date(Date.now() + expiresAt * 3600000)
-        : new Date(Date.now() + 10 * 24 * 3600000), // default 10 days
-      status: 'active',
-      shortUrl: `${process.env.BASE_URL}/f/${shortCode}`,
-      createdBy: userId,
-    };
-    if (isPassword === 'true') {
+      if (isPassword === 'true') {
         const hashedPassword = await bcrypt.hash(password, 10);
         fileObj.password = hashedPassword;
         fileObj.isPasswordProtected = true;
-        fileObj.password = hashedPassword;
+      }
 
+      const newFile = new File(fileObj);
+      const savedFile = await newFile.save();
+      savedFiles.push(savedFile);
+
+      // Update user stats
+      user.totalUploads += 1;
+      if (file.mimetype.startsWith('image/')) user.imageCount += 1;
+      else if (file.mimetype.startsWith('video/')) user.videoCount += 1;
+      else if (file.mimetype.startsWith('application/')) user.documentCount += 1;
     }
 
-    const newFile = new File(fileObj);
-    const savedFile = await newFile.save();
-
-    const user= await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    user.totalUploads += 1;
-    // check the file type and increment the respective count
-    if (file.mimetype.startsWith('image/')) {
-      user.imageCount += 1;
-    } else if (file.mimetype.startsWith('video/')) {
-      user.videoCount += 1;
-    } else if (file.mimetype.startsWith('application/')) {
-      user.documentCount += 1;
-    }
     await user.save();
 
     return res.status(201).json({
-      message: "File uploaded successfully",
-      fileId: savedFile._id,
+      message: "Files uploaded successfully",
+      fileIds: savedFiles.map(f => f._id),
     });
   } catch (error) {
     console.error("Upload error:", error);
     res.status(500).json({ message: "File upload failed" });
   }
+};
 
 
-}
+
 
 const downloadFile = async (req, res) => {
     const { fileId } = req.params;

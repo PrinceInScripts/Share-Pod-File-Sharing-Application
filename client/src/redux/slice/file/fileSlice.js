@@ -22,6 +22,7 @@ const fileSlice = createSlice({
   initialState: {
     files: [],
     userFiles: [],
+    uploadFiles: [],
     selectedFile: null,
     qrCodeUrl: null,
     downloadCounts: {},
@@ -45,7 +46,7 @@ const fileSlice = createSlice({
       })
       .addCase(uploadFile.fulfilled, (state, action) => {
         state.loading = false;
-        state.files.push(action.payload);
+         state.files.push(...action.payload.fileIds);
       })
       .addCase(uploadFile.rejected, (state, action) => {
         state.loading = false;

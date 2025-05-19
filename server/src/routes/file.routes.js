@@ -5,7 +5,7 @@ import { deleteFile, downloadFile, generateQR, generateShareShortenLink, getDown
 
 const router=Router();
 
-router.post("/upload",upload.single('file'),uploadFiles);
+router.post("/upload", upload.array('files'), uploadFiles);
 router.get("/download/:fileId",downloadFile);
 router.delete("/delete/:fileId",deleteFile);
 router.put("/update/:fileId",updateFileStatus);
