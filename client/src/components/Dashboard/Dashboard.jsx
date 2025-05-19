@@ -5,6 +5,7 @@ import StatsGrid from "./StatesGrid";
 import UserProfile from "./UserProfile";
 import UploadPage from "./FileUpload/UploadPage";
 import FileShow from "./FileShow";
+import Logout from "./Logout";
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -36,7 +37,7 @@ const Dashboard = () => {
           {activeTab === "upload" && <UploadPage />}
           {activeTab === "profile" && <UserProfile />}
           {activeTab === "settings" && <UserProfile />}
-          {activeTab === "logout" && <h1 className="text-3xl font-bold text-gray-800">Logging out...</h1>}
+          {activeTab === "logout" && <Logout />}
           {activeTab === "home" && 
 
            <>
