@@ -19,10 +19,10 @@ router.get('/searchFiles', searchFiles);
 router.get('/showUserFiles', showUserFiles);
 
 router.get('/generateQR/:fileId', generateQR);
-router.get('getDownloadCount/:fileId', getDownloadCount);
+router.get('/getDownloadCount/:fileId', getDownloadCount);
 
 
-router.get('/resolveShareLink/:shortUrl', resolveShareLink);
+router.get('/resolveShareLink/:code', resolveShareLink);
 router.post('/verifyFilePassword', verifyFilePassword);
 
 router.get('/getUserFiles/:userId', getUserFiles);

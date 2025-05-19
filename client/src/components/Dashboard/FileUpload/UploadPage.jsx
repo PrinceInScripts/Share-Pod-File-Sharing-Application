@@ -2,7 +2,8 @@ import React, { useRef, useState } from "react";
 import "./FileUploader.css"; // Make sure to copy your CSS into this file
 import { useDispatch, useSelector } from "react-redux";
 import { uploadFile } from "../../../redux/slice/file/fileThunk";
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
+
 
 const FileUploader = () => {
   const fileInputRef = useRef(null);
@@ -81,8 +82,15 @@ const FileUploader = () => {
 
     try {
       const result = await dispatch(uploadFile(formData)).unwrap();
-      toast.success(`${result.message}. File IDs: ${result.fileIds.join(", ")}`);
+    //  toast.success(`files uploaded successfully!`);
+      setNotification("Files uploaded successfully!");
+      setShowNotification(true);
       setFiles([]);
+      setTimeout(() => setShowNotification(false), 3000);
+      // refresh the page or redirect to another page
+      window.location.reload();
+
+
     } catch (err) {
       toast.error(err?.error || "Upload failed");
     }

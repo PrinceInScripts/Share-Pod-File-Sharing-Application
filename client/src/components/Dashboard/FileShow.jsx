@@ -73,7 +73,14 @@ const FileShow = () => {
                         {file.name}
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500">
-                        {(file.size / 1024).toFixed(2)} KB
+                        {
+                          file.size>1024*1024
+                            ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
+                            : file.size > 1024
+                            ? `${(file.size / 1024).toFixed(2)} KB`
+                            : `${file.size} Bytes`
+                      
+                        }
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-500">
                         {file.type}

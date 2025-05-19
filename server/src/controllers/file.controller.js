@@ -428,7 +428,9 @@ const getDownloadCount = async (req, res) => {
 
 
 const resolveShareLink = async (req, res) => {
-  const { shortUrl } = req.params;
+  const { code } = req.params;
+const shortUrl = `${process.env.BASE_URL}/f/${code}`;
+const file = await File.findOne({ shortUrl });
 
   try {
     const file = await File.findOne({ shortUrl });

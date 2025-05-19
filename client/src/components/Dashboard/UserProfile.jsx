@@ -21,7 +21,7 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="p-6 bg-white shadow-lg rounded-xl max-w-4xl mx-auto mt-10">
+    <div className="p-6 bg-white shadow-lg rounded-xl mx-auto mt-10">
       <h2 className="text-3xl font-bold text-gray-800 mb-6">User Profile</h2>
 
       <div className="flex items-center gap-6">
