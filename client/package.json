@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@reduxjs/toolkit": "^2.2.6",
+    "@reduxjs/toolkit": "^2.8.2",
     "axios": "^1.7.2",
     "date-fns": "^4.1.0",
     "react": "^18.3.1",
@@ -20,7 +20,7 @@
     "react-loader-spinner": "^6.1.6",
     "react-progress-bar": "^0.1.0",
     "react-qr-code": "^2.0.15",
-    "react-redux": "^9.1.2",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^6.25.1",
     "react-share": "^5.1.0",
     "react-toastify": "^10.0.5"

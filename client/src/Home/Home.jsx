@@ -101,7 +101,7 @@ const Home = () => {
       <section className="bg-white py-12 px-4 text-center">
         <div className="max-w-3xl mx-auto">
           <FaLaptopCode size={40} className="mx-auto text-gray-700 mb-4" />
-          <h2 className="text-2xl font-bold mb-2">Crafted by Prince Kumar</h2>
+          <h2 className="text-2xl font-bold mb-2">Developed By Prince Kumar</h2>
           <p className="text-gray-600 mb-4">
             Passionate MERN stack developer dedicated to building fast and user-friendly web experiences.
           </p>

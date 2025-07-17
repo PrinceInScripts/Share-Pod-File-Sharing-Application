@@ -26,16 +26,17 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<Home />} />
+         {/* <Route path="/dashboard" element={<Dashboard />} /> */}
         <Route element={<RequireAuth />}>
-    <Route path="/dashboard" element={<Dashboard />} />
-    <Route path="/f/:code" element={<FileDownload />} />
-  </Route>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/f/:code" element={<FileDownload />} />
+        </Route>
 
-  {/* Non-auth-only Routes */}
-  <Route element={<NoRequireAuth />}>
-    <Route path="/login" element={<Login />} />
-    <Route path="/signup" element={<Signup />} />
-  </Route>
+        {/* Non-auth-only Routes */}
+        <Route element={<NoRequireAuth />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Route>
       </Routes>
     </>
   );
