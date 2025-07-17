@@ -2,14 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* custom CSS variables */
 :root {
   --bg-color: #ffffff;
   --text-color: #1f2937;
-  --primary-text: #ec4899; /* Default: pink */
+  --primary-text: #ec4899;
   --text-on-primary: #ffffff;
   --primary-soft: #fce7f3;
   --primary-gradient: linear-gradient(to right, #ec4899, #8b5cf6);
-  --gradient-bg: linear-gradient(to right, #ec4899, #fbbf24, #6366f1); /* fallback gradient */
+  --gradient-bg: linear-gradient(to right, #ec4899, #fbbf24, #6366f1);
 }
 
 [data-theme='blue'] {

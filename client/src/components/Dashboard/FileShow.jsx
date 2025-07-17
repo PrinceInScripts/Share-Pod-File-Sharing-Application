@@ -18,7 +18,7 @@ const [filterStatus, setFilterStatus] = useState("");
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   useEffect(() => {
     if (user && user._id) {
@@ -404,53 +404,8 @@ const paginatedFiles = filteredFiles?.slice(
 
       {/* Share Modal */}
       {shareFile && (
-        // <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center  justify-center z-50">
-        //   <div className="bg-white dark:bg-[--bg-color] p-6 rounded shadow-lg max-w-md w-full">
-        //     <h3 className="text-lg font-bold mb-4">Share "{shareFile.name}"</h3>
-        //     <div className="space-y-3">
-        //       <a
-        //         href={handleShare(shareFile.shortUrl).whatsapp}
-        //         target="_blank"
-        //         rel="noreferrer"
-        //         className="block text-green-500 hover:underline"
-        //       >
-        //         Share via WhatsApp
-        //       </a>
-        //       <a
-        //         href={handleShare(shareFile.shortUrl).facebook}
-        //         target="_blank"
-        //         rel="noreferrer"
-        //         className="block text-blue-500 hover:underline"
-        //       >
-        //         Share via Facebook
-        //       </a>
-        //       <a
-        //         href={handleShare(shareFile.shortUrl).email}
-        //         className="block text-red-500 hover:underline"
-        //       >
-        //         Share via Email
-        //       </a>
-        //       <div className="mt-4">
-        //         <p className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-        //           QR Code:
-        //         </p>
-        //         <img
-        //           src={handleShare(shareFile.shortUrl).qr}
-        //           alt="QR Code"
-        //           className="border rounded"
-        //         />
-        //       </div>
-        //     </div>
-        //     <div className="mt-6 text-right">
-        //       <button
-        //         onClick={() => setShareFile(null)}
-        //         className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900"
-        //       >
-        //         Close
-        //       </button>
-        //     </div>
-        //   </div>
-        // </div>
+      
+        
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
   <div className="bg-white dark:bg-[--bg-color] p-6 rounded shadow-lg w-full max-w-md md:max-w-2xl">
     <h3 className="text-lg font-bold mb-4 text-center">

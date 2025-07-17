@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
- content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   darkMode: ['class', '[data-mode="dark"]'], // use dark mode from [data-mode]
   theme: {
     extend: {
@@ -22,7 +22,7 @@ export default {
           text: '#6b21a8',
         }
       },
-       animation: {
+      animation: {
         float: 'float 6s ease-in-out infinite',
       },
       keyframes: {
@@ -30,8 +30,8 @@ export default {
           '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
           '50%': { transform: 'translateY(-20px) rotate(180deg)' },
         },
+      },
     },
   },
   plugins: [],
-}
-
+};
