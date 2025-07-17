@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUserFiles } from "../../redux/slice/file/fileThunk";
 import { formatDistanceToNowStrict, differenceInDays } from "date-fns";
 import { FaWhatsapp, FaTelegramPlane, FaInstagram, FaEnvelope, FaHeadset,FaDownload } from "react-icons/fa"
+import { toast } from "react-toastify";
 
 const FileShow = () => {
   const dispatch = useDispatch();
@@ -30,16 +31,31 @@ const [filterStatus, setFilterStatus] = useState("");
     return filename.length > 20 ? `${filename.slice(0, 20)}...` : filename;
   }
 
-  const handleShare = (url) => {
-    const encodedURL = encodeURIComponent(url);
-    return {
-      whatsapp: `https://wa.me/?text=${encodedURL}`,
-      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedURL}`,
-      instagram: "#",
-      email: `mailto:?subject=File%20Share&body=Here's%20your%20file:%20${encodedURL}`,
-      qr: `https://api.qrserver.com/v1/create-qr-code/?data=${encodedURL}&size=150x150`,
-    };
+  // const handleShare = (url) => {
+  //   const encodedURL = encodeURIComponent(url);
+  //   return {
+  //     whatsapp: `https://wa.me/?text=${encodedURL}`,
+  //     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedURL}`,
+  //     instagram: "#",
+  //     email: `mailto:?subject=File%20Share&body=Here's%20your%20file:%20${encodedURL}`,
+  //     qr: `https://api.qrserver.com/v1/create-qr-code/?data=${encodedURL}&size=150x150`,
+  //   };
+  // };
+
+  function handleShare(shortUrl) {
+  const frontendBaseUrl = window.location.origin; // Automatically picks http://localhost:5173 or your deployed domain
+  const fullUrl = `${frontendBaseUrl}${shortUrl}`;
+
+  return {
+    whatsapp: `https://wa.me/?text=${encodeURIComponent("Download file: " + fullUrl)}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(fullUrl)}`,
+    twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(fullUrl)}&text=Check this out!`,
+    email: `mailto:?subject=Shared File&body=${encodeURIComponent("Here’s your file: " + fullUrl)}`,
+    copy: fullUrl,
+    qr: `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(fullUrl)}&size=150x150`
   };
+}
+
 
  // Filter logic
 const filteredFiles = files?.filter((file) => {
@@ -479,6 +495,7 @@ const paginatedFiles = filteredFiles?.slice(
         <FaEnvelope className="text-red-500 text-2xl" />
         <span className="font-semibold">Email</span>
       </a>
+      
 
       
     </div>
@@ -492,6 +509,7 @@ const paginatedFiles = filteredFiles?.slice(
         alt="QR Code"
         className="mx-auto border rounded w-32 h-32"
       />
+      <div className="flex flex-col items-center mt-4">
       <a
         href={handleShare(shareFile.shortUrl).qr}
         download="qr-code.png"
@@ -500,7 +518,22 @@ const paginatedFiles = filteredFiles?.slice(
         <FaDownload className="text-blue-500 text-2xl" />
         <span className="font-semibold">Download QR Code</span>
       </a>
+
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(handleShare(shareFile.shortUrl).copy);
+           toast.success("Link copied to clipboard!");
+          }}
+          className="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-500 rounded hover:bg-blue-200 transition"
+        >
+          <FaDownload className="text-blue-500 text-2xl" />
+          <span className="font-semibold">Copy Link</span>
+        </button>
+
+        </div>
+      
     </div>
+    
 
     <div className="mt-6 text-center">
       <button

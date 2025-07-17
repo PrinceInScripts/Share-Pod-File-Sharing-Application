@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axiosInstance from "./config/axiosInstance";
+import { useParams } from "react-router-dom";
 
 // pages/FileDownload.js
 const FileDownload = () => {

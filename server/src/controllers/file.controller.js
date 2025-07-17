@@ -55,7 +55,7 @@ const uploadFiles = async (req, res) => {
           ? new Date(Date.now() + expiresAt * 3600000)
           : new Date(Date.now() + 10 * 24 * 3600000),
         status: 'active',
-        shortUrl: `${process.env.BASE_URL}/f/${shortCode}`,
+        shortUrl: `/f/${shortCode}`,
         createdBy: userId,
       };
 
@@ -87,6 +87,65 @@ const uploadFiles = async (req, res) => {
     res.status(500).json({ message: "File upload failed" });
   }
 };
+
+const downloadInfo = async (req, res) => {
+  const { shortCode } = req.params;
+  try {
+    const file = await File.findOne({ shortUrl: `/f/${shortCode}` });
+    if (!file) {
+      return res.status(404).json({ error: 'File not found' });
+    }
+    if (file.status !== 'active') {
+      return res.status(403).json({ error: 'This file is not available for download' });
+    }
+    if (file.expiresAt && new Date(file.expiresAt) < new Date()) {
+      return res.status(410).json({ error: 'This file has expired' });
+    }
+    const s3 = new AWS.S3({
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      region: process.env.AWS_REGION
+    });
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: `file-share-app/${file.name}`,
+      Expires: 24 * 60 * 60, // 24 hours
+    };
+    const downloadUrl = s3.getSignedUrl('getObject', params);
+    if (!downloadUrl) {
+      return res.status(500).json({ error: 'Error generating download URL' });
+    }
+    file.downloadedContent++;
+    await file.save();
+    // Update user download count
+    const user = await User.findById(file.createdBy);
+    if (user) {
+      user.totalDownloads += 1;
+      await user.save();
+    }
+    return res.status(200).json({ 
+      downloadUrl,
+      id: file._id,
+      name: file.name,
+      size: file.size,
+      type: file.type || 'file', // fallback if missing
+      path: file.path,
+      isPasswordProtected: file.isPasswordProtected || false,
+      expiresAt: file.expiresAt || null,
+      status: file.status || 'active',
+      shortUrl: file.shortUrl,
+      downloadedContent: file.downloadedContent,
+      createdAt: file.createdAt,
+      updatedAt: file.updatedAt
+    });
+
+  } catch (error) {
+    console.error("Download error:", error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+
 
 
 
@@ -548,5 +607,6 @@ export {
     resolveShareLink,
     verifyFilePassword,
     getUserFiles,
-    updateAllFileExpiry
+    updateAllFileExpiry,
+    downloadInfo
 }
