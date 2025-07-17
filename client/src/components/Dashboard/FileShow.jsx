@@ -128,8 +128,8 @@ const paginatedFiles = filteredFiles?.slice(
         <div className="-my-2 overflow-x-auto">
           <div className="inline-block min-w-full py-2 align-middle">
             <div className="overflow-hidden border border-[var(--border-color)] rounded-md shadow-md">
-              <table className="min-w-full divide-y divide-[var(--border-color)] text-[var(--text-color)]">
-              <thead className="bg-[var(--primary-text)] text-[var(--text-on-primary)]">
+             <table className="min-w-full divide-y divide-[var(--border-color)] text-[var(--text-color)]">
+  <thead className="bg-[var(--primary-text)] text-[var(--text-on-primary)] hidden md:table-header-group">
                 <tr>
                   {[
                     "File Name",
@@ -150,7 +150,7 @@ const paginatedFiles = filteredFiles?.slice(
                   ))}
                 </tr>
               </thead>
-              <tbody className="bg-[var(--bg-color)] divide-y divide-[var(--border-color)]">
+              {/* <tbody className="bg-[var(--bg-color)] divide-y divide-[var(--border-color)]">
                 {paginatedFiles?.map((file) => {
                   const shareLinks = handleShare(file.shortUrl);
                   const formattedSize =
@@ -215,7 +215,125 @@ const paginatedFiles = filteredFiles?.slice(
                     </tr>
                   );
                 })}
-              </tbody>
+              </tbody> */}
+              <tbody className="bg-[var(--bg-color)] divide-y divide-[var(--border-color)]">
+  {paginatedFiles?.map((file) => {
+    const shareLinks = handleShare(file.shortUrl);
+    const formattedSize =
+      file.size > 1024 * 1024
+        ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
+        : file.size > 1024
+        ? `${(file.size / 1024).toFixed(2)} KB`
+        : `${file.size} Bytes`;
+
+    const isExpired =
+      differenceInDays(new Date(file.expiresAt), new Date()) <= 0;
+
+    return (
+      <>
+        {/* Desktop Row */}
+        <tr
+          key={file._id}
+          className="hover:bg-[var(--hover-bg-color)] hidden md:table-row"
+        >
+          <td className="px-6 py-4 text-sm">{sortFileName(file.name)}</td>
+          <td className="px-6 py-4 text-sm text-gray-400">{formattedSize}</td>
+          <td className="px-6 py-4 text-sm text-gray-400">{file.type}</td>
+          <td className="px-6 py-4 text-sm text-gray-400">
+            {file.downloadedContent}
+          </td>
+          <td className="px-6 py-4 text-sm">
+            <span
+              className={`font-medium ${
+                file.status === "active" ? "text-green-500" : "text-red-500"
+              }`}
+            >
+              {file.status}
+            </span>
+          </td>
+          <td className="px-6 py-4 text-sm space-x-3">
+            <button
+              onClick={() => setPreviewFile(file)}
+              className="text-blue-400 hover:text-blue-300 underline"
+            >
+              Preview
+            </button>
+            <button
+              onClick={() => setShareFile(file)}
+              className="text-purple-400 hover:text-purple-300 underline"
+            >
+              Share
+            </button>
+          </td>
+          <td className="px-6 py-4 text-sm text-red-500">
+            {isExpired
+              ? "Expired"
+              : `Expires in ${differenceInDays(
+                  new Date(file.expiresAt),
+                  new Date()
+                )} days`}
+          </td>
+          <td className="px-6 py-4 text-sm text-gray-400">
+            Uploaded{" "}
+            {formatDistanceToNowStrict(new Date(file.createdAt), {
+              addSuffix: true,
+            })}
+          </td>
+        </tr>
+
+        {/* Mobile Card */}
+        <tr key={`mobile-${file._id}`} className="block md:hidden border-b border-gray-200">
+          <td className="block px-4 py-4">
+            <div className="mb-2">
+              <strong className="text-gray-700 dark:text-gray-200">📄 {sortFileName(file.name)}</strong>
+              <div className="text-xs text-gray-400">{file.type} | {formattedSize}</div>
+            </div>
+            <div className="text-sm text-gray-500 mb-1">
+              <span className="font-medium">Status: </span>
+              <span className={file.status === "active" ? "text-green-600" : "text-red-500"}>
+                {file.status}
+              </span>
+            </div>
+            <div className="text-sm text-gray-500 mb-1">
+              <span className="font-medium">Downloaded:</span> {file.downloadedContent}
+            </div>
+            <div className="text-sm text-gray-500 mb-1">
+              <span className="font-medium">Expiry:</span>{" "}
+              {isExpired
+                ? "Expired"
+                : `Expires in ${differenceInDays(
+                    new Date(file.expiresAt),
+                    new Date()
+                  )} days`}
+            </div>
+            <div className="text-sm text-gray-500 mb-1">
+              <span className="font-medium">Uploaded:</span>{" "}
+              {formatDistanceToNowStrict(new Date(file.createdAt), {
+                addSuffix: true,
+              })}
+            </div>
+
+            <div className="flex flex-wrap gap-4 mt-3">
+              <button
+                onClick={() => setPreviewFile(file)}
+                className="text-blue-500 underline"
+              >
+                Preview
+              </button>
+              <button
+                onClick={() => setShareFile(file)}
+                className="text-purple-500 underline"
+              >
+                Share
+              </button>
+            </div>
+          </td>
+        </tr>
+      </>
+    );
+  })}
+</tbody>
+
             </table>
           </div>
 
