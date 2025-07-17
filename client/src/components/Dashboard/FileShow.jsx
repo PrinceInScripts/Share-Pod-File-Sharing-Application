@@ -9,6 +9,10 @@ const FileShow = () => {
   const { files } = useSelector((state) => state.file);
   const [previewFile, setPreviewFile] = useState(null);
   const [shareFile, setShareFile] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+const [filterType, setFilterType] = useState("");
+const [filterStatus, setFilterStatus] = useState("");
+
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,21 +40,95 @@ const FileShow = () => {
     };
   };
 
-  // Pagination calculations
-  const totalPages = Math.ceil((files?.length || 0) / itemsPerPage);
-  const paginatedFiles = files?.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+ // Filter logic
+const filteredFiles = files?.filter((file) => {
+  const nameMatch = file.name.toLowerCase().includes(searchTerm.toLowerCase());
+  const typeMatch = filterType ? file.type === filterType : true;
+  
+  const statusMatch = filterStatus
+    ? filterStatus === "expired"
+      ? differenceInDays(new Date(file.expiresAt), new Date()) <= 0
+      : differenceInDays(new Date(file.expiresAt), new Date()) > 0
+    : true;
+
+  return nameMatch && typeMatch && statusMatch;
+});
+
+// Pagination logic
+const totalPages = Math.ceil((filteredFiles?.length || 0) / itemsPerPage);
+const paginatedFiles = filteredFiles?.slice(
+  (currentPage - 1) * itemsPerPage,
+  currentPage * itemsPerPage
+);
 
   return (
     <div className="flex flex-col mt-6">
-      <h2 className="text-xl font-bold mb-4">Your Uploaded Files</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold mb-4">📁 Your Uploaded Files</h2>
+        <p className="text-sm text-gray-500">
+  Showing {filteredFiles.length} file{filteredFiles.length !== 1 && "s"}
+</p>
 
-      <div className="-my-2 overflow-x-auto">
-        <div className="inline-block min-w-full py-2 align-middle">
-          <div className="overflow-hidden border border-[var(--border-color)] rounded-md shadow-md">
-            <table className="min-w-full divide-y divide-[var(--border-color)] text-[var(--text-color)]">
+        
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-4 w-full lg:items-center mb-4">
+  <div className="relative flex-1">
+    <span className="absolute left-3 top-2.5 text-gray-400">🔍</span>
+    <input
+      type="text"
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      className="pl-10 pr-4 py-2 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary-text)]"
+      placeholder="Search by file name"
+      aria-label="Search"
+    />
+  </div>
+
+  <select
+    className="px-3 py-2 border rounded-lg"
+    value={filterType}
+    onChange={(e) => setFilterType(e.target.value)}
+  >
+    <option value="">All Types</option>
+    {[...new Set(files?.map((f) => f.type))].map((type) => (
+      <option key={type} value={type}>{type}</option>
+    ))}
+  </select>
+
+  <select
+    className="px-3 py-2 border rounded-lg"
+    value={filterStatus}
+    onChange={(e) => setFilterStatus(e.target.value)}
+  >
+    <option value="">All Status</option>
+    <option value="active">Active</option>
+    <option value="expired">Expired</option>
+  </select>
+
+  {(filterType || filterStatus || searchTerm) && (
+    <button
+      onClick={() => {
+        setSearchTerm("");
+        setFilterType("");
+        setFilterStatus("");
+      }}
+      className="px-3 py-2 bg-red-100 text-red-500 rounded hover:bg-red-200"
+    >
+      Reset
+    </button>
+  )}
+</div>
+
+      
+
+      {!files || files.length === 0 ? (
+        <p className="text-gray-500">No files uploaded yet.</p>
+      ) : (
+        <div className="-my-2 overflow-x-auto">
+          <div className="inline-block min-w-full py-2 align-middle">
+            <div className="overflow-hidden border border-[var(--border-color)] rounded-md shadow-md">
+              <table className="min-w-full divide-y divide-[var(--border-color)] text-[var(--text-color)]">
               <thead className="bg-[var(--primary-text)] text-[var(--text-on-primary)]">
                 <tr>
                   {[
@@ -165,6 +243,7 @@ const FileShow = () => {
           )}
         </div>
       </div>
+      )}
 
       {/* Preview Modal */}
       {previewFile && (
