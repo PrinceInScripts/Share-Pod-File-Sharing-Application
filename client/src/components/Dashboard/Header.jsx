@@ -41,8 +41,8 @@ const Header = ({ sidebarOpen, setSidebarOpen }) => {
 
       {/* Branding */}
       <div className="hidden sm:flex flex-col text-center">
-        <h1 className="text-lg font-bold text-[var(--primary-text)]">AetherDesk</h1>
-        <p className="text-xs text-gray-500 hidden md:block">All‑In‑One Space, Tailored Just for You</p>
+        <h1 className="text-lg font-bold text-[var(--primary-text)]">SharePod</h1>
+        <p className="text-xs text-gray-500 hidden md:block">A File Sharing Plateform</p>
       </div>
 
       {/* Search Bar */}

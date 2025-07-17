@@ -89,8 +89,8 @@ const FileUploader = () => {
   };
 
   return (
-    <div className="container">
-      <div className="header">
+    <div className="container bg-[var(--bg-color)] text-[var(--text-color)] p-6 rounded-lg shadow-md">
+      <div className="header bg-[var(--bg-color)] text-[var(--text-color)] text-center mb-6">
         <h1>File Upload</h1>
         <p>Drag & drop files or click to browse</p>
       </div>
@@ -125,7 +125,7 @@ const FileUploader = () => {
         />
       </div>
 
-      <div className="extra-options">
+      <div className="extra-options bg-[var(--bg-color)] text-[var(--text-color)] mt-6">
         <div className="switch-container">
           <label className="switch-label">
             <span className="label-text">Set Password</span>

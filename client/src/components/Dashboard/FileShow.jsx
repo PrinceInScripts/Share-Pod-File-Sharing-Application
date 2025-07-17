@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserFiles } from "../../redux/slice/file/fileThunk";
 import { formatDistanceToNowStrict, differenceInDays } from "date-fns";
+import { FaWhatsapp, FaTelegramPlane, FaInstagram, FaEnvelope, FaHeadset,FaDownload } from "react-icons/fa"
 
 const FileShow = () => {
   const dispatch = useDispatch();
@@ -387,53 +388,130 @@ const paginatedFiles = filteredFiles?.slice(
 
       {/* Share Modal */}
       {shareFile && (
+        // <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center  justify-center z-50">
+        //   <div className="bg-white dark:bg-[--bg-color] p-6 rounded shadow-lg max-w-md w-full">
+        //     <h3 className="text-lg font-bold mb-4">Share "{shareFile.name}"</h3>
+        //     <div className="space-y-3">
+        //       <a
+        //         href={handleShare(shareFile.shortUrl).whatsapp}
+        //         target="_blank"
+        //         rel="noreferrer"
+        //         className="block text-green-500 hover:underline"
+        //       >
+        //         Share via WhatsApp
+        //       </a>
+        //       <a
+        //         href={handleShare(shareFile.shortUrl).facebook}
+        //         target="_blank"
+        //         rel="noreferrer"
+        //         className="block text-blue-500 hover:underline"
+        //       >
+        //         Share via Facebook
+        //       </a>
+        //       <a
+        //         href={handleShare(shareFile.shortUrl).email}
+        //         className="block text-red-500 hover:underline"
+        //       >
+        //         Share via Email
+        //       </a>
+        //       <div className="mt-4">
+        //         <p className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+        //           QR Code:
+        //         </p>
+        //         <img
+        //           src={handleShare(shareFile.shortUrl).qr}
+        //           alt="QR Code"
+        //           className="border rounded"
+        //         />
+        //       </div>
+        //     </div>
+        //     <div className="mt-6 text-right">
+        //       <button
+        //         onClick={() => setShareFile(null)}
+        //         className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900"
+        //       >
+        //         Close
+        //       </button>
+        //     </div>
+        //   </div>
+        // </div>
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded shadow-lg max-w-md w-full">
-            <h3 className="text-lg font-bold mb-4">Share "{shareFile.name}"</h3>
-            <div className="space-y-3">
-              <a
-                href={handleShare(shareFile.shortUrl).whatsapp}
-                target="_blank"
-                rel="noreferrer"
-                className="block text-green-500 hover:underline"
-              >
-                Share via WhatsApp
-              </a>
-              <a
-                href={handleShare(shareFile.shortUrl).facebook}
-                target="_blank"
-                rel="noreferrer"
-                className="block text-blue-500 hover:underline"
-              >
-                Share via Facebook
-              </a>
-              <a
-                href={handleShare(shareFile.shortUrl).email}
-                className="block text-red-500 hover:underline"
-              >
-                Share via Email
-              </a>
-              <div className="mt-4">
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                  QR Code:
-                </p>
-                <img
-                  src={handleShare(shareFile.shortUrl).qr}
-                  alt="QR Code"
-                  className="border rounded"
-                />
-              </div>
-            </div>
-            <div className="mt-6 text-right">
-              <button
-                onClick={() => setShareFile(null)}
-                className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
+  <div className="bg-white dark:bg-[--bg-color] p-6 rounded shadow-lg w-full max-w-md md:max-w-2xl">
+    <h3 className="text-lg font-bold mb-4 text-center">
+      Share "{shareFile?.name}"
+    </h3>
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-[var(--text-color)]">
+      <a
+        href={handleShare(shareFile.shortUrl).whatsapp}
+        target="_blank"
+        rel="noreferrer"
+        className="flex items-center gap-3 p-4 border rounded hover:shadow transition"
+      >
+        <FaWhatsapp className="text-green-500 text-2xl" />
+        <span className="font-semibold">WhatsApp</span>
+      </a>
+
+      <a
+        href={handleShare(shareFile.shortUrl).instagram || "#"}
+        target="_blank"
+        rel="noreferrer"
+        className="flex items-center gap-3 p-4 border rounded hover:shadow transition"
+      >
+        <FaInstagram className="text-pink-500 text-2xl" />
+        <span className="font-semibold">Instagram</span>
+      </a>
+
+      <a
+        href={handleShare(shareFile.shortUrl).telegram}
+        target="_blank"
+        rel="noreferrer"
+        className="flex items-center gap-3 p-4 border rounded hover:shadow transition"
+      >
+        <FaTelegramPlane className="text-blue-500 text-2xl" />
+        <span className="font-semibold ">Telegram</span>
+      </a>
+
+      <a
+        href={handleShare(shareFile.shortUrl).email}
+        className="flex items-center gap-3 p-4 border rounded hover:shadow transition"
+      >
+        <FaEnvelope className="text-red-500 text-2xl" />
+        <span className="font-semibold">Email</span>
+      </a>
+
+      
+    </div>
+
+    <div className="mt-6 text-center">
+      <p className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+        QR Code:
+      </p>
+      <img
+        src={handleShare(shareFile.shortUrl).qr}
+        alt="QR Code"
+        className="mx-auto border rounded w-32 h-32"
+      />
+      <a
+        href={handleShare(shareFile.shortUrl).qr}
+        download="qr-code.png"
+        className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-500 rounded hover:bg-blue-200 transition"
+      >
+        <FaDownload className="text-blue-500 text-2xl" />
+        <span className="font-semibold">Download QR Code</span>
+      </a>
+    </div>
+
+    <div className="mt-6 text-center">
+      <button
+        onClick={() => setShareFile(null)}
+        className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</div>
       )}
     </div>
   );
