@@ -247,6 +247,37 @@ const updateFileExpiry = async (req, res) => {
     }
 }
 
+const updateAllFileExpiry = async (req, res) => {
+    const files = await File.find();
+  
+    try {
+        if (!files || files.length === 0) {
+            return res.status(404).json({ error: 'No files found' });
+        }
+
+        const updatedFiles = [];
+        for (const file of files) {
+          if (file.status === 'deleted') continue; // Skip deleted files
+           if (file?.expiresAt && new Date(file.expiresAt) < new Date()) {
+              file.status = 'expired';
+              file.hasExpiry = true; // Keep this if expired files should still have expiry set
+          } else {
+              file.expiresAt = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000); // 10 days from now
+              file.hasExpiry = true;
+          }
+            await file.save();
+            updatedFiles.push(file);
+        }
+
+        return res.status(200).json({ message: 'All file expiries updated successfully', files: updatedFiles });
+    } catch (error) {
+        console.error("Update all expiry error:", error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+
+
 const updateFilePassword = async (req, res) => {
   const { fileId } = req.params;
   const { newPassword } = req.body;
@@ -516,5 +547,6 @@ export {
     getDownloadCount,
     resolveShareLink,
     verifyFilePassword,
-    getUserFiles
+    getUserFiles,
+    updateAllFileExpiry
 }
