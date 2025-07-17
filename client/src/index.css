@@ -1,3 +1,45 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --bg-color: #ffffff;
+  --text-color: #1f2937;
+  --primary-text: #4f46e5;
+  --text-on-primary: #ffffff;
+  --gradient-bg: linear-gradient(to right, #ec4899, #fbbf24, #6366f1); /* pink default */
+    --primary-text: #ec4899;
+  --primary-soft: #fce7f3;
+  --primary-gradient: linear-gradient(to right, #ec4899, #8b5cf6);
+}
+
+[data-theme='blue'] {
+  --primary-text: #3b82f6;
+  --gradient-bg: linear-gradient(to right, #60a5fa, #3b82f6, #2563eb);
+   --primary-text: #3b82f6;
+  --primary-soft: #dbeafe;
+  --primary-gradient: linear-gradient(to right, #60a5fa, #3b82f6);
+}
+
+[data-theme='green'] {
+  --primary-text: #10b981;
+  --gradient-bg: linear-gradient(to right, #34d399, #10b981, #059669);
+    --primary-text: #10b981;
+  --primary-soft: #d1fae5;
+  --primary-gradient: linear-gradient(to right, #34d399, #10b981);
+}
+
+[data-theme='purple'] {
+  --primary-text: #8b5cf6;
+  --gradient-bg: linear-gradient(to right, #a78bfa, #8b5cf6, #6d28d9);
+   --primary-text: #8b5cf6;
+  --primary-soft: #ede9fe;
+  --primary-gradient: linear-gradient(to right, #a78bfa, #8b5cf6);
+}
+
+[data-mode='dark'] {
+  --bg-color: #1f2937;
+  --text-color: #f9fafb;
+  --text-on-primary: #f9fafb;
+   --primary-soft: rgba(255, 255, 255, 0.05);
+}

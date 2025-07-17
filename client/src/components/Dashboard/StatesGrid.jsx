@@ -1,12 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "../../redux/slice/auth/authThunk";
+import WelcomeSection from "./WelcomeSection";
 
 const StatsGrid = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  console.log(user);
-  
   const hasFetched = useRef(false);
 
   useEffect(() => {
@@ -20,54 +19,63 @@ const StatsGrid = () => {
     {
       title: "Total Uploads",
       value: user?.totalUploads ?? 0,
+      icon: "📤",
     },
     {
       title: "Total Downloads",
       value: user?.totalDownloads ?? 0,
+      icon: "📥",
     },
     {
       title: "Videos Uploaded",
       value: user?.videoCount ?? 0,
+      icon: "🎬",
     },
     {
       title: "Images Uploaded",
       value: user?.imageCount ?? 0,
+      icon: "🖼️",
     },
     {
       title: "Documents Uploaded",
       value: user?.documentCount ?? 0,
+      icon: "📄",
     },
     {
       title: "Last Login",
-      value: new Date(user?.lastLogin).toLocaleString() ?? "N/A",
+      value: user?.lastLogin ? new Date(user.lastLogin).toLocaleString() : "N/A",
+      icon: "⏰",
     },
-  ].filter((card) => card.value !== undefined); // Remove invalid cards if any
+  ].filter((card) => card.value !== undefined);
 
   return (
     <div className="mt-6">
-      {/* Profile Header */}
-      <div className="flex items-center mb-6 gap-4">
-        <img
-          src={user?.profilePic}
-          alt="Profile"
-          className="w-16 h-16 rounded-full border"
-        />
-        <div>
-          <h2 className="text-xl font-semibold">{user?.fullname}</h2>
-          <p className="text-gray-500">{user?.email}</p>
-          <p className="text-sm text-gray-400">@{user?.username}</p>
-        </div>
-      </div>
+      {/* Welcome Message */}
+      <WelcomeSection user={user} />
 
       {/* Stats Cards */}
-      <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4`}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {cards.map((card, index) => (
           <div
             key={index}
-            className="p-4 border rounded-lg shadow-sm hover:shadow-md transition-shadow"
+            className="relative p-5 rounded-xl bg-white dark:bg-gray-900 shadow-md transition hover:shadow-lg"
           >
-            <h4 className="text-gray-500">{card.title}</h4>
-            <p className="text-2xl font-bold mt-1">{card.value}</p>
+            {/* Top Gradient Border */}
+            <div className="absolute top-0 left-0 w-full h-1 rounded-t-xl bg-[var(--primary-gradient)]" />
+
+            {/* Icon */}
+            <div className="flex items-center justify-center h-full gap-10">
+              {/* <div className="w-20 h-20 mb-4 bg-[var(--primary-soft)] text-[var(--primary-text)] rounded-xl flex items-center justify-center text-xl">
+                {card.icon}
+              </div> */}
+              <div className="text-center">
+                <p className="text-2xl font-semibold text-[var(--primary-text)]">{card.value}</p>
+                <p className="text-gray-600 dark:text-gray-300 mt-1 text-sm">{card.title}</p>
+              </div>
+            </div>
+           
+
+            
           </div>
         ))}
       </div>
