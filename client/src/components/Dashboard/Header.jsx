@@ -23,10 +23,10 @@ const Header = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   return (
-    <header className="w-full flex items-center justify-between px-4 py-3 border-b shadow-sm fixed top-0 left-0 z-50 bg-[var(--bg-color)] text-[var(--text-color)]">
-      {/* Left: Sidebar Toggle (Always visible) */}
+    <header className="w-full flex items-center justify-between px-4 py-5 border-b shadow-sm fixed top-0 left-0 z-50 bg-[var(--bg-color)] text-[var(--text-color)]">
+      {/* Hamburger Menu */}
       <button
-        className="focus:outline-none"
+        className="focus:outline-none md:hidden"
         onClick={() => setSidebarOpen(!sidebarOpen)}
         aria-label="Toggle sidebar"
       >
@@ -39,13 +39,13 @@ const Header = ({ sidebarOpen, setSidebarOpen }) => {
         </svg>
       </button>
 
-      {/* Center: Branding (Only on sm and up) */}
+      {/* Branding */}
       <div className="hidden sm:flex flex-col text-center">
         <h1 className="text-lg font-bold text-[var(--primary-text)]">AetherDesk</h1>
         <p className="text-xs text-gray-500 hidden md:block">All‑In‑One Space, Tailored Just for You</p>
       </div>
 
-      {/* Search Bar (Only on lg and up) */}
+      {/* Search Bar */}
       <div className="hidden lg:flex items-center w-1/3 relative">
         <span className="absolute left-3 text-gray-400">🔍</span>
         <input
@@ -56,9 +56,9 @@ const Header = ({ sidebarOpen, setSidebarOpen }) => {
         />
       </div>
 
-      {/* Right: Theme and User */}
+      {/* Theme + User Profile */}
       <div className="flex items-center space-x-4">
-        {/* Theme Dropdown */}
+        {/* 🎨 Theme Dropdown */}
         <div className="relative">
           <button
             onClick={() => setThemeDropdownOpen(!themeDropdownOpen)}
@@ -99,12 +99,11 @@ const Header = ({ sidebarOpen, setSidebarOpen }) => {
           )}
         </div>
 
-        {/* User Profile */}
+        {/* User Avatar */}
         <div className="flex items-center space-x-2 cursor-pointer" tabIndex={0} role="button">
           <div className="w-9 h-9 rounded-full bg-[var(--primary-text)] flex items-center justify-center text-white font-bold">
             {user?.fullname?.charAt(0).toUpperCase() || "U"}
           </div>
-          {/* Only show full info on md+ */}
           <div className="hidden md:block">
             <h3 className="text-sm font-medium">{user?.fullname || "User"}</h3>
             <p className="text-xs text-gray-500">{user?.email || "user@example.com"}</p>

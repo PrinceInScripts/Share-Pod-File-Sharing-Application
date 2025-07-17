@@ -33,7 +33,7 @@ const Dashboard = () => {
       )}
       <div className="flex flex-col flex-1">
         <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-6 mt-20">
           {activeTab === "upload" && <UploadPage />}
           {activeTab === "profile" && <UserProfile />}
           {activeTab === "settings" && <UserProfile />}
@@ -41,7 +41,7 @@ const Dashboard = () => {
           {activeTab === "home" && 
 
            <>
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Dashboard Overview</h2>
+          <h2 className="text-2xl font-bold text mb-4">Dashboard Overview</h2>
           <StatsGrid />
           <FileShow />
          </>

@@ -3,7 +3,7 @@ import React from "react";
 const Sidebar = ({ sidebarOpen, setSidebarOpen, setActiveTab, activeTab }) => {
   const handleTabClick = (tab) => {
     setActiveTab(tab);
-    setSidebarOpen(false); // Correct usage to close sidebar after click
+    setSidebarOpen(false); // Close on mobile
   };
 
   const tabs = [
@@ -17,12 +17,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setActiveTab, activeTab }) => {
     <div
       className={`fixed inset-y-0 left-0 transform ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      } transition-transform duration-200 ease-in-out z-40 w-64 shadow-lg md:translate-x-0 md:static md:inset-0 bg-[var(--bg-color)] text-[var(--text-color)]`}
+      } transition-transform duration-200 ease-in-out w-64 z-40 md:translate-x-0 md:static md:inset-0 bg-[var(--bg-color)] text-[var(--text-color)] shadow-lg py-20`}
     >
-      <div className="flex flex-col h-full">
-        <div className="px-6 py-4 text-2xl font-bold border-b border-[var(--border-color)]">
-          Dashboard
-        </div>
+      <div className="flex flex-col h-full border-r border-[var(--border-color)]">
         <nav className="flex-1 px-4 py-6 space-y-2">
           {tabs.map((tab) => (
             <button
@@ -31,7 +28,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setActiveTab, activeTab }) => {
               className={`flex items-center gap-3 px-4 py-2 rounded-md text-left w-full font-medium
                 ${
                   activeTab === tab.id
-                    ? "bg-green-600 text-white" // Active color
+                    ? "bg-green-600 text-white"
                     : "hover:bg-purple-100 hover:text-purple-800 transition"
                 }`}
             >
