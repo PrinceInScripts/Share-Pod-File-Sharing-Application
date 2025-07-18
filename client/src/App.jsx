@@ -14,6 +14,8 @@ import RequireAuth from "./components/Auth/RequireAuth";
 import NoRequireAuth from "./components/Auth/NotRequireAuth";
 import DownloadPage from "./components/DownloadPage";
 import Download from "./components/Download";
+import GuestHomePage from "./components/Guest/GuestHomePage";
+import GuestHome from "./components/Guest/Download/GuestHome";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -39,6 +41,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
            <Route path="/f/:shortCode" element={<Download />} />
+          <Route path="/g/:shortCode" element={<GuestHome />} />
+          <Route path="/g" element={<GuestHomePage />} />
         </Route>
       </Routes>
     </>
