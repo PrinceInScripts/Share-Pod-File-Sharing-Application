@@ -5,12 +5,12 @@ import { toast } from "react-toastify";
 import axiosInstance from "../../config/axiosInstance";
 
 
-const GuestFileUpload = () => {
+const GuestFileUpload = ({guestFiles, updateFiles}) => {
   const fileInputRef = useRef(null);
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.file);
+  const [loading ,setLoading] = useState(false);
 
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState(guestFiles || []);
   const [enablePassword, setEnablePassword] = useState(false);
   const [password, setPassword] = useState("");
   const [enableExpiry, setEnableExpiry] = useState(false);
@@ -56,8 +56,10 @@ const GuestFileUpload = () => {
   const totalSize = files.reduce((acc, file) => acc + file.size, 0);
 
   const handleUpload = async () => {
+    setLoading(true);
     if (files.length === 0) {
       toast.error("Please upload at least one file.");
+      setLoading(false);
       return;
     }
 
@@ -82,16 +84,20 @@ const GuestFileUpload = () => {
         "/files/upload-guest",
         formData
       );
-      if (response.status === 200) {
+      console.log("Files uploaded:", response);
+      if (response.data.message || response.data.message === "Files uploaded successfully!") {
         toast.success("Files uploaded successfully!");
-        // Store uploaded files in local storage for guest access in existed files too 
-        const existingFiles = JSON.parse(localStorage.getItem("guestFiles")) || [];
-        localStorage.setItem("guestFiles", JSON.stringify([...existingFiles, ...response.data]));
+        const newFiles = response.data.files;
+        const updatedFiles = [...guestFiles, ...newFiles];
+
+        updateFiles(updatedFiles); // ✅ directly update parent state and localStorage
         setFiles([]);
-        window.location.reload();
+        setLoading(false);
+        // window.location.reload();
       }
     } catch (err) {
       toast.error(err?.error || "Upload failed");
+      setLoading(false);
     }
   };
 
