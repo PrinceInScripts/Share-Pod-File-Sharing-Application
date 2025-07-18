@@ -1,4 +1,5 @@
 import { File } from '../models/file.models.js';
+import { GuestFile } from '../models/guestFile.models.js';
 import s3 from "../config/s3.js";
 import bcrypt from "bcryptjs";
 import AWS from "aws-sdk";
@@ -90,6 +91,91 @@ const uploadFiles = async (req, res) => {
   }
 };
 
+const uploadFilesGuest = async (req, res) => {
+      if(!req.files || req.files.length === 0){
+        return res.status(400).json({ error: 'No files uploaded' });
+      }
+
+      const {isPassword,password,hasExpiry,expiresAt} = req.body;
+
+      try {
+           const s3 = new AWS.S3({
+             accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+             secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+             region: process.env.AWS_REGION
+           });
+
+            const savedFiles = [];
+
+
+            for(const file of req.files){
+              const originalName = file.originalname;
+              const extension = path.extname(originalName);
+              const uniqueSuffix = shortid.generate();
+              const finalFileName = `${originalName.replace(/\s+/g, '_')}_${uniqueSuffix}${extension}`;
+
+              const params = {
+                Bucket: process.env.AWS_BUCKET_NAME,
+                Key: `file-share-app/${finalFileName}`,
+                Body: file.buffer,
+                ContentType: file.mimetype,
+              };
+
+              const s3Result = await s3.upload(params).promise();
+              const fileUrl = s3Result.Location;
+              const shortCode = shortid.generate();
+
+              const username = shortid.generate();
+
+              const fileObj = {
+                path: fileUrl,
+                name: finalFileName,
+                type: file.mimetype,
+                size: file.size,
+                hasExpiry: hasExpiry === 'true',
+                expiresAt: hasExpiry === 'true'
+                  ? new Date(Date.now() + expiresAt * 3600000)
+                  : new Date(Date.now() + 10 * 24 * 3600000),
+                status: 'active',
+                shortUrl: `/g/${shortCode}`,
+                createdBy: `guest_${username}`,
+              };
+
+              if (isPassword === 'true') {
+                const hashedPassword = await bcrypt.hash(password, 10);
+                fileObj.password = hashedPassword;
+                fileObj.isPasswordProtected = true;
+              }
+
+              const newFile = new GuestFile(fileObj);
+              const savedFile = await newFile.save();
+              savedFiles.push(savedFile);
+            }
+
+
+            return res.status(201).json({
+              message: "Files uploaded successfully",
+              files: savedFiles.map(f => ({
+                id: f._id,
+                name: f.name,
+                size: f.size,
+                type: f.type,
+                path: f.path,
+                isPasswordProtected: f.isPasswordProtected,
+                expiresAt: f.expiresAt,
+                status: f.status,
+                shortUrl: f.shortUrl,
+                createdAt: f.createdAt,
+                updatedAt: f.updatedAt
+              }))
+            });
+          } catch (error) {
+            console.error("Upload error:", error);
+            res.status(500).json({ message: "File upload failed" });
+          }
+        };
+
+
 const downloadInfo = async (req, res) => {
   const { shortCode } = req.params;
 
@@ -157,7 +243,62 @@ const downloadInfo = async (req, res) => {
   }
 };
 
+const guestDownloadInfo = async (req, res) => {
+  const { shortCode } = req.params;
+  try {
+    const file = await GuestFile.findOne({ shortUrl: `/g/${shortCode}` });
+    if (!file) {
+      return res.status(404).json({ error: 'File not found' });
+    }
+    if (file.status !== 'active') {
+      return res.status(403).json({ error: 'This file is not available for download' });
+    }
+    if (file.expiresAt && new Date(file.expiresAt) < new Date()) {
+      return res.status(410).json({ error: 'This file has expired' });
+    }
+    const s3 = new S3Client({
+      region: process.env.AWS_REGION,
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+      }
+    });
 
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: `file-share-app/${file.name}`,
+      ResponseContentDisposition: `attachment; filename="${file.name}"`
+    };
+
+    const command = new GetObjectCommand(params);
+    const downloadUrl = await getSignedUrl(s3, command, { expiresIn: 24 * 60 * 60 });
+
+    file.downloadedContent++;
+    await file.save();
+
+
+    return res.status(200).json({
+      downloadUrl,
+      id: file._id,
+      name: file.name,
+      size: file.size,
+      type: file.type || 'file',
+      path: file.path,
+      isPasswordProtected: file.isPasswordProtected || false,
+      expiresAt: file.expiresAt || null,
+      status: file.status || 'active',
+      shortUrl: file.shortUrl,
+      downloadedContent: file.downloadedContent,
+      uploadedBy: user?.fullname || 'Unknown',
+      createdAt: file.createdAt,
+      updatedAt: file.updatedAt
+    });
+
+  } catch (error) {
+    console.error("Download error:", error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 
 
@@ -619,5 +760,7 @@ export {
     verifyFilePassword,
     getUserFiles,
     updateAllFileExpiry,
-    downloadInfo
+    downloadInfo,
+    uploadFilesGuest,
+    guestDownloadInfo
 }
