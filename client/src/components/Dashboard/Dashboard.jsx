@@ -6,6 +6,7 @@ import UserProfile from "./UserProfile";
 import UploadPage from "./FileUpload/UploadPage";
 import FileShow from "./FileShow";
 import Logout from "./Logout";
+import Footer from "../Footer";
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -26,6 +27,7 @@ const Dashboard = () => {
   }
 
   return (
+    <>
     <div className="min-h-screen flex bg-gray-100">
       <Sidebar sidebarOpen={sidebarOpen}  setSidebarOpen={setSidebarOpen} setActiveTab={setActiveTab} activeTab={activeTab}/>
       {sidebarOpen && (
@@ -46,9 +48,15 @@ const Dashboard = () => {
           <FileShow />
          </>
            }
+           
         </main>
+        
       </div>
+      
     </div>
+    <Footer/>
+    </>
+    
   );
 };
 

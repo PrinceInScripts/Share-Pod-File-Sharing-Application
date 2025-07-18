@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const Header = ({ sidebarOpen, setSidebarOpen }) => {
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
@@ -38,8 +39,8 @@ const Header = ({ sidebarOpen, setSidebarOpen }) => {
     <header className="w-full flex flex-wrap items-center justify-between px-4 py-4 border-b shadow-sm fixed top-0 left-0 z-50 bg-[var(--bg-color)] text-[var(--text-color)]">
       {/* Branding */}
       <div className="flex flex-col items-start sm:items-center text-left sm:text-center">
-        <h1 className="text-lg font-bold text-[var(--primary-text)]">SharePod</h1>
-        <p className="text-xs text-gray-500 hidden md:block">A File Sharing Platform</p>
+        <h1 className="text-lg font-bold text-[var(--primary-text)]">PasteBox</h1>
+        <p className="text-xs text-gray-500 hidden md:block">Paste it. Store it. Share it</p>
       </div>
 
       {/* Theme + User Actions */}
@@ -105,12 +106,12 @@ const Header = ({ sidebarOpen, setSidebarOpen }) => {
 
         {/* Auth Buttons */}
        <div className="flex items-center gap-3">
-  <button className="text-sm font-medium px-4 py-2 rounded-full bg-blue-500 text-blue-100 hover:bg-blue-700 hover:text-white transition">
+  <Link to="/signup" className="text-sm font-medium px-4 py-2 rounded-full bg-blue-500 text-blue-100 hover:bg-blue-700 hover:text-white transition">
     Sign Up
-  </button>
-  <button className="text-sm font-medium px-4 py-2 rounded-full bg-purple-500 text-purple-100 hover:bg-purple-700 hover:text-white transition">
+  </Link>
+  <Link to="/login" className="text-sm font-medium px-4 py-2 rounded-full bg-purple-500 text-purple-100 hover:bg-purple-700 hover:text-white transition">
     Log In
-  </button>
+  </Link>
 </div>
 
       </div>

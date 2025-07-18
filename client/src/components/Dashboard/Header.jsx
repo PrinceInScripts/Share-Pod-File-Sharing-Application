@@ -47,8 +47,8 @@ const Header = ({ sidebarOpen, setSidebarOpen }) => {
 
       {/* Branding */}
       <div className="hidden sm:flex flex-col text-center">
-        <h1 className="text-lg font-bold text-[var(--primary-text)]">SharePod</h1>
-        <p className="text-xs text-gray-500 hidden md:block">A File Sharing Plateform</p>
+        <h1 className="text-lg font-bold text-[var(--primary-text)]">PasteBox</h1>
+        <p className="text-xs text-gray-500 hidden md:block">Paste it. Store it. Share it</p>
       </div>
 
       {/* Search Bar */}

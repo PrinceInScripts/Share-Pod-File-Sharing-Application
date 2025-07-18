@@ -725,6 +725,23 @@ const verifyFilePassword = async (req, res) => {
   }
 };
 
+const verifyGuestFilePassword = async (req, res) => {
+  const { shortCode, password } = req.body;
+  try {
+    const file = await GuestFile.findOne({ shortUrl: `/g/${shortCode}` });
+    if (!file || !file.isPasswordProtected)
+      return res.status(400).json({ success: false, error: "File not protected or not found" });
+
+    const isMatch = await bcrypt.compare(password, file.password);
+    if (!isMatch) return res.status(401).json({ success: false, error: "Incorrect password" });
+
+    return res.status(200).json({ success: true, message: "Password verified" });
+  } catch (error) {
+    console.error("Guest file password verification error:", error);
+    res.status(500).json({ success: false, error: "Server error" });
+  }
+}
+
 const getUserFiles = async (req, res) => {
 
   const { userId } = req.params;
@@ -765,5 +782,6 @@ export {
     updateAllFileExpiry,
     downloadInfo,
     uploadFilesGuest,
-    guestDownloadInfo
-}
+    guestDownloadInfo,
+    verifyGuestFilePassword
+};

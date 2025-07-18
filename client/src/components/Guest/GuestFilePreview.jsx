@@ -77,11 +77,7 @@ const GuestFilePreview = ({ guestFiles }) => {
     setFiles(guestFiles);
   }, [guestFiles]);
 
-  useEffect(() => {
-    if (files.length === 0) {
-      toast.info("No files uploaded yet. Please upload files to preview.");
-    }
-  }, [files]);
+
 
   const filteredFiles = files?.filter((file) => {
     const nameMatch = file.name
@@ -389,16 +385,23 @@ const GuestFilePreview = ({ guestFiles }) => {
               </div>
             )}
           </div>
-          <p className="text-gray-900 mt-4">
-            Want to save permanently?{" "}
-            <Link to="/login" className="text-blue-500 underline">
-              Login
-            </Link>{" "}
-            or{" "}
-            <Link to="/signup" className="text-blue-500 underline">
-              Create An Account
-            </Link>
-          </p>
+          <p className="text-gray-800 mt-6 text-center text-sm">
+  Want to save your progress?{" "}
+  <Link
+    to="/login"
+    className="text-blue-600 font-medium hover:underline hover:text-blue-800 transition-colors duration-200"
+  >
+    Log in
+  </Link>{" "}
+  or{" "}
+  <Link
+    to="/signup"
+    className="text-blue-600 font-medium hover:underline hover:text-blue-800 transition-colors duration-200"
+  >
+    Create an account
+  </Link>
+</p>
+
         </div>
       )}
 

@@ -72,7 +72,7 @@ const GuestDownload = () => {
     }
 
     try {
-      const res = await fetch(`http://localhost:6600/api/files/verifyFilePassword`, {
+      const res = await fetch(`http://localhost:6600/api/files/verifyGuestFilePassword`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ shortCode, password }),
