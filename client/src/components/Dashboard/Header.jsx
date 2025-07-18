@@ -3,24 +3,30 @@ import { useSelector } from "react-redux";
 
 const Header = ({ sidebarOpen, setSidebarOpen }) => {
   const { user } = useSelector((state) => state.auth);
-  const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") || "pink";
-    const savedMode = localStorage.getItem("mode") || "light";
-    document.body.setAttribute("data-theme", savedTheme);
-    document.body.setAttribute("data-mode", savedMode);
-  }, []);
-
-  const setTheme = (theme) => {
-    document.body.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-  };
-
-  const setMode = (mode) => {
-    document.body.setAttribute("data-mode", mode);
-    localStorage.setItem("mode", mode);
-  };
+ const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
+   const [mode, setModeState] = useState("light");
+   const [theme, setThemeState] = useState("pink");
+ 
+   useEffect(() => {
+     const savedTheme = localStorage.getItem("theme") || "pink";
+     const savedMode = localStorage.getItem("mode") || "light";
+     setThemeState(savedTheme);
+     setModeState(savedMode);
+     document.body.setAttribute("data-theme", savedTheme);
+     document.body.setAttribute("data-mode", savedMode);
+   }, []);
+ 
+   const setTheme = (newTheme) => {
+     document.body.setAttribute("data-theme", newTheme);
+     localStorage.setItem("theme", newTheme);
+     setThemeState(newTheme);
+   };
+ 
+   const setMode = (newMode) => {
+     document.body.setAttribute("data-mode", newMode);
+     localStorage.setItem("mode", newMode);
+     setModeState(newMode);
+   };
 
   return (
     <header className="w-full flex items-center justify-between px-4 py-5 border-b shadow-sm fixed top-0 left-0 z-50 bg-[var(--bg-color)] text-[var(--text-color)]">
@@ -50,43 +56,59 @@ const Header = ({ sidebarOpen, setSidebarOpen }) => {
 
       {/* Theme + User Profile */}
       <div className="flex items-center space-x-4">
+         <div className="flex items-center space-x-2">
+  <label className="relative inline-flex items-center cursor-pointer">
+    <input
+      type="checkbox"
+      checked={mode === "dark"}
+      onChange={() => setMode(mode === "light" ? "dark" : "light")}
+      className="sr-only peer"
+    />
+    <div
+      className={`
+        w-11 h-6 rounded-full 
+        peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-offset-2
+        transition-colors duration-300
+        ${mode === "dark" ? "bg-[var(--primary-text)]" : "bg-gray-300"}
+        peer-checked:bg-[var(--primary-text)]
+        peer-checked:after:translate-x-full
+      `}
+    ></div>
+    <div
+      className={`
+        absolute left-1 top-1 w-4 h-4 rounded-full bg-white 
+        transition-transform duration-300
+        ${mode === "dark" ? "translate-x-5" : ""}
+      `}
+    ></div>
+  </label>
+  {/* <span className="text-sm text-gray-700 dark:text-gray-200">
+    {mode === "dark" ? "Dark Mode" : "Light Mode"}
+  </span> */}
+</div>
+
         {/* 🎨 Theme Dropdown */}
-        <div className="relative">
+         <div className="relative">
           <button
             onClick={() => setThemeDropdownOpen(!themeDropdownOpen)}
             aria-label="Theme settings"
             className="text-xl"
           >
-            🎨
+            <img src="https://cdn-icons-png.flaticon.com/128/11460/11460836.png" alt="Theme Icon" className="w-10 h-10" />
           </button>
           {themeDropdownOpen && (
             <div className="absolute right-0 mt-2 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-lg shadow-lg p-3 z-50 min-w-[150px]">
-              {/* Color Themes */}
+              {/* Color Options */}
               <div className="flex space-x-2 mb-2">
-                {["pink", "blue", "green", "purple"].map((color) => (
-                  <button
-                    key={color}
-                    onClick={() => setTheme(color)}
-                    className={`w-5 h-5 rounded-full bg-${color}-500`}
-                    aria-label={`${color} theme`}
-                  />
-                ))}
-              </div>
-              {/* Mode Toggle */}
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => setMode("light")}
-                  className="text-sm px-2 py-1 bg-gray-100 rounded hover:bg-gray-200"
-                >
-                  ☀️ Light
-                </button>
-                <button
-                  onClick={() => setMode("dark")}
-                  className="text-sm px-2 py-1 bg-gray-100 rounded hover:bg-gray-200"
-                >
-                  🌙 Dark
-                </button>
-              </div>
+  {Object.keys(colorMap).map((color) => (
+    <button
+      key={color}
+      onClick={() => setTheme(color)}
+      className={`w-5 h-5 rounded-full ${colorMap[color]}`}
+      aria-label={`${color} theme`}
+    />
+  ))}
+</div>
             </div>
           )}
         </div>

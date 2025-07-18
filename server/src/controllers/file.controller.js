@@ -7,6 +7,8 @@ import shortid from "shortid";
 import QRCode from "qrcode";
 import { User } from '../models/user.models.js';
 import path from "path";
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 
 
@@ -90,51 +92,61 @@ const uploadFiles = async (req, res) => {
 
 const downloadInfo = async (req, res) => {
   const { shortCode } = req.params;
+
   try {
     const file = await File.findOne({ shortUrl: `/f/${shortCode}` });
     if (!file) {
       return res.status(404).json({ error: 'File not found' });
     }
+
     if (file.status !== 'active') {
       return res.status(403).json({ error: 'This file is not available for download' });
     }
+
     if (file.expiresAt && new Date(file.expiresAt) < new Date()) {
       return res.status(410).json({ error: 'This file has expired' });
     }
-    const s3 = new AWS.S3({
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-      region: process.env.AWS_REGION
+
+    const s3 = new S3Client({
+      region: process.env.AWS_REGION,
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+      }
     });
+
     const params = {
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: `file-share-app/${file.name}`,
-      Expires: 24 * 60 * 60, // 24 hours
+      ResponseContentDisposition: `attachment; filename="${file.name}"` // 🟢 Force download
     };
-    const downloadUrl = s3.getSignedUrl('getObject', params);
-    if (!downloadUrl) {
-      return res.status(500).json({ error: 'Error generating download URL' });
-    }
+
+    const command = new GetObjectCommand(params);
+    const downloadUrl = await getSignedUrl(s3, command, { expiresIn: 24 * 60 * 60 }); // 24 hours
+
     file.downloadedContent++;
     await file.save();
+
     // Update user download count
     const user = await User.findById(file.createdBy);
     if (user) {
       user.totalDownloads += 1;
       await user.save();
     }
-    return res.status(200).json({ 
+
+    return res.status(200).json({
       downloadUrl,
       id: file._id,
       name: file.name,
       size: file.size,
-      type: file.type || 'file', // fallback if missing
+      type: file.type || 'file',
       path: file.path,
       isPasswordProtected: file.isPasswordProtected || false,
       expiresAt: file.expiresAt || null,
       status: file.status || 'active',
       shortUrl: file.shortUrl,
       downloadedContent: file.downloadedContent,
+      uploadedBy: user?.fullname || 'Unknown',
       createdAt: file.createdAt,
       updatedAt: file.updatedAt
     });
@@ -143,8 +155,7 @@ const downloadInfo = async (req, res) => {
     console.error("Download error:", error);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
-}
-
+};
 
 
 
@@ -553,20 +564,20 @@ const file = await File.findOne({ shortUrl });
 };
 
 const verifyFilePassword = async (req, res) => {
-  const { fileId, password } = req.body;
+  const { shortCode, password } = req.body;
 
   try {
-    const file = await File.findById(fileId);
+    const file = await File.findOne({ shortUrl: `/f/${shortCode}` });
     if (!file || !file.isPasswordProtected)
-      return res.status(400).json({ error: "File not protected or not found" });
+      return res.status(400).json({ success: false, error: "File not protected or not found" });
 
     const isMatch = await bcrypt.compare(password, file.password);
-    if (!isMatch) return res.status(401).json({ error: "Incorrect password" });
+    if (!isMatch) return res.status(401).json({ success: false, error: "Incorrect password" });
 
-    return res.status(200).json({ message: "Password verified" });
+    return res.status(200).json({ success: true, message: "Password verified" });
   } catch (error) {
     console.error("Password verification error:", error);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ success: false, error: "Server error" });
   }
 };
 

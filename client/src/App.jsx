@@ -13,6 +13,7 @@ import { loadUserFromStorage } from "./redux/slice/auth/authSlice";
 import RequireAuth from "./components/Auth/RequireAuth";
 import NoRequireAuth from "./components/Auth/NotRequireAuth";
 import DownloadPage from "./components/DownloadPage";
+import Download from "./components/Download";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -37,7 +38,7 @@ function App() {
         <Route element={<NoRequireAuth />}>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-           <Route path="/f/:shortCode" element={<DownloadPage />} />
+           <Route path="/f/:shortCode" element={<Download />} />
         </Route>
       </Routes>
     </>
