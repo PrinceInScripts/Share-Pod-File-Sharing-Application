@@ -163,6 +163,7 @@ const uploadFilesGuest = async (req, res) => {
                 path: f.path,
                 isPasswordProtected: f.isPasswordProtected,
                 expiresAt: f.expiresAt,
+                downloadedContent: f.downloadedContent,
                 status: f.status,
                 shortUrl: f.shortUrl,
                 createdAt: f.createdAt,
@@ -244,7 +245,9 @@ const downloadInfo = async (req, res) => {
 };
 
 const guestDownloadInfo = async (req, res) => {
+  
   const { shortCode } = req.params;
+ 
   try {
     const file = await GuestFile.findOne({ shortUrl: `/g/${shortCode}` });
     if (!file) {
@@ -289,7 +292,7 @@ const guestDownloadInfo = async (req, res) => {
       status: file.status || 'active',
       shortUrl: file.shortUrl,
       downloadedContent: file.downloadedContent,
-      uploadedBy: user?.fullname || 'Unknown',
+      uploadedBy: file.createdBy,
       createdAt: file.createdAt,
       updatedAt: file.updatedAt
     });
