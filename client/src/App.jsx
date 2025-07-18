@@ -29,7 +29,7 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Home />} />
+        
          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
         <Route element={<RequireAuth />}>
           <Route path="/dashboard" element={<Dashboard />} />
@@ -38,11 +38,12 @@ function App() {
 
         {/* Non-auth-only Routes */}
         <Route element={<NoRequireAuth />}>
+        <Route path="/" element={<GuestHomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
            <Route path="/f/:shortCode" element={<Download />} />
           <Route path="/g/:shortCode" element={<GuestHome />} />
-          <Route path="/g" element={<GuestHomePage />} />
+          {/* <Route path="/g" element={<GuestHomePage />} /> */}
         </Route>
       </Routes>
     </>

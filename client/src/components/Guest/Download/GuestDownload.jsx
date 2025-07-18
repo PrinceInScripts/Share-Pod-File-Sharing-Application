@@ -11,24 +11,7 @@ const GuestDownload = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isVerified, setIsVerified] = useState(false);
 
-  // useEffect(() => {
-  //   fetch(`http://localhost:6600/api/files/f/${shortCode}`)
-  //     .then((res) => {
-  //       if (!res.ok) throw new Error("File not found");
-  //       return res.json();
-  //     })
-  //     .then((data) => {
-  //       setFile(data);
-  //       setIsProtected(data.isPasswordProtected);
-  //       setIsLoading(false);
-
-  //       if (data.isPasswordProtected) {
-  //         toast.info("🔒 This file is password protected. Please enter the password.");
-  //       }
-  //     })
-  //     .catch((err) => setError(err.message));
-  // }, [shortCode]);
-   useEffect(() => {
+  useEffect(() => {
   const controller = new AbortController();
 
   const fetchFile = async () => {
@@ -46,7 +29,16 @@ const GuestDownload = () => {
 
       if (data.isPasswordProtected) {
         toast.info("🔒 This file is password protected. Please enter the password.");
+      } else {
+        // Automatically trigger download
+        const link = document.createElement("a");
+        link.href = data.downloadUrl;
+        link.download = data.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
+
     } catch (err) {
       if (err.name !== "AbortError") {
         setError(err.message);
@@ -56,9 +48,9 @@ const GuestDownload = () => {
 
   fetchFile();
 
-  // cleanup to cancel if component unmounts or re-renders
   return () => controller.abort();
 }, [shortCode]);
+
 
   const handleDownload = () => {
   const link = document.createElement('a');

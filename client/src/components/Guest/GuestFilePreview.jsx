@@ -10,8 +10,10 @@ import {
   FaDownload,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
+import { FaEye, FaShare, FaTrashAlt } from "react-icons/fa";
 
-const GuestFilePreview = ({guestFiles}) => {
+const GuestFilePreview = ({ guestFiles }) => {
   const dispatch = useDispatch();
   const [files, setFiles] = useState(guestFiles || []);
   const [previewFile, setPreviewFile] = useState(null);
@@ -53,6 +55,24 @@ const GuestFilePreview = ({guestFiles}) => {
     };
   }
 
+  const deleteFile = (fileId) => {
+    if (!fileId) {
+      toast.error("File ID is invalid.");
+      return;
+    }
+
+    const updatedFiles = files.filter((file) => file.id !== fileId);
+
+    setFiles(updatedFiles);
+    localStorage.setItem("guestFiles", JSON.stringify(updatedFiles));
+
+    // Re-sync from localStorage (if that's your source of truth)
+    const refreshedFiles = JSON.parse(localStorage.getItem("guestFiles")) || [];
+    setFiles(refreshedFiles);
+
+    toast.success("File deleted successfully!");
+  };
+
   useEffect(() => {
     setFiles(guestFiles);
   }, [guestFiles]);
@@ -87,8 +107,8 @@ const GuestFilePreview = ({guestFiles}) => {
   return (
     <div className="flex flex-col mt-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold mb-4">📁 Your Uploaded Files</h2>
-        <p className="text-sm text-gray-500">
+        <h2 className="text-xl font-bold text-[var(--primary-text)] mb-4">📁 Your Uploaded Files</h2>
+        <p className="text-sm text-[var(--primary-text)]">
           Showing {filteredFiles.length} file{filteredFiles.length !== 1 && "s"}
         </p>
       </div>
@@ -107,7 +127,7 @@ const GuestFilePreview = ({guestFiles}) => {
         </div>
 
         <select
-          className="px-3 py-2 border rounded-lg"
+          className="px-3 py-2 border rounded-lg text-gray-900"
           value={filterType}
           onChange={(e) => setFilterType(e.target.value)}
         >
@@ -120,7 +140,7 @@ const GuestFilePreview = ({guestFiles}) => {
         </select>
 
         <select
-          className="px-3 py-2 border rounded-lg"
+          className="px-3 py-2 border rounded-lg text-gray-900"
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
         >
@@ -216,19 +236,30 @@ const GuestFilePreview = ({guestFiles}) => {
                               {file.status}
                             </span>
                           </td>
-                          <td className="px-6 py-4 text-sm space-x-3">
+                          <td className="px-6 py-4 flex gap-2 mt-2 text-sm space-x-3">
                             <button
                               onClick={() => setPreviewFile(file)}
-                              className="text-blue-400 hover:text-blue-300 underline"
+                              className="flex items-center gap-1 px-3 py-1 text-sm text-blue-600 border border-blue-500 rounded hover:bg-blue-50 transition"
                             >
-                              Preview
+                              <FaEye /> Preview
                             </button>
+
+                            {/* Share */}
                             <button
                               onClick={() => setShareFile(file)}
-                              className="text-purple-400 hover:text-purple-300 underline"
+                              className="flex items-center gap-1 px-3 py-1 text-sm text-purple-600 border border-purple-500 rounded hover:bg-purple-50 transition"
                             >
-                              Share
+                              <FaShare /> Share
                             </button>
+
+                            {/* Delete */}
+                            <button
+                              onClick={() => deleteFile(file.id)}
+                              className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 border border-red-500 rounded hover:bg-red-50 transition"
+                            >
+                              <FaTrashAlt /> Delete
+                            </button>
+                            <br />
                           </td>
                           <td className="px-6 py-4 text-sm text-red-500">
                             {isExpired
@@ -299,18 +330,28 @@ const GuestFilePreview = ({guestFiles}) => {
                             </div>
 
                             <div className="flex flex-wrap gap-4 mt-3">
-                              <button
-                                onClick={() => setPreviewFile(file)}
-                                className="text-blue-500 underline"
-                              >
-                                Preview
-                              </button>
-                              <button
-                                onClick={() => setShareFile(file)}
-                                className="text-purple-500 underline"
-                              >
-                                Share
-                              </button>
+                             <button
+                              onClick={() => setPreviewFile(file)}
+                              className="flex items-center gap-1 px-3 py-1 text-sm text-blue-600 border border-blue-500 rounded hover:bg-blue-50 transition"
+                            >
+                              <FaEye /> Preview
+                            </button>
+
+                            {/* Share */}
+                            <button
+                              onClick={() => setShareFile(file)}
+                              className="flex items-center gap-1 px-3 py-1 text-sm text-purple-600 border border-purple-500 rounded hover:bg-purple-50 transition"
+                            >
+                              <FaShare /> Share
+                            </button>
+
+                            {/* Delete */}
+                            <button
+                              onClick={() => deleteFile(file.id)}
+                              className="flex items-center gap-1 px-3 py-1 text-sm text-red-600 border border-red-500 rounded hover:bg-red-50 transition"
+                            >
+                              <FaTrashAlt /> Delete
+                            </button>
                             </div>
                           </td>
                         </tr>
@@ -348,6 +389,16 @@ const GuestFilePreview = ({guestFiles}) => {
               </div>
             )}
           </div>
+          <p className="text-gray-900 mt-4">
+            Want to save permanently?{" "}
+            <Link to="/login" className="text-blue-500 underline">
+              Login
+            </Link>{" "}
+            or{" "}
+            <Link to="/signup" className="text-blue-500 underline">
+              Create An Account
+            </Link>
+          </p>
         </div>
       )}
 

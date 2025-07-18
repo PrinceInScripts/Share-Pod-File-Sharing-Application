@@ -104,14 +104,15 @@ const Header = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
 
         {/* Auth Buttons */}
-        <div className="flex items-center space-x-2">
-          <button className="text-sm px-2 py-1 bg-[var(--primary-soft)] text-[var(--primary-text)] rounded hover:bg-[var(--primary-gradient)] whitespace-nowrap">
-            Sign Up
-          </button>
-          <button className="text-sm px-2 py-1 bg-[var(--primary-soft)] text-[var(--primary-text)] rounded hover:bg-[var(--secondary-gradient)] whitespace-nowrap">
-            Log In
-          </button>
-        </div>
+       <div className="flex items-center gap-3">
+  <button className="text-sm font-medium px-4 py-2 rounded-full bg-blue-500 text-blue-100 hover:bg-blue-700 hover:text-white transition">
+    Sign Up
+  </button>
+  <button className="text-sm font-medium px-4 py-2 rounded-full bg-purple-500 text-purple-100 hover:bg-purple-700 hover:text-white transition">
+    Log In
+  </button>
+</div>
+
       </div>
     </header>
   );

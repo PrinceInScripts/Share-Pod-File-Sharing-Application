@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Header from "../HeaderComp";
 import GuestFilePreview from "./GuestFilePreview";
 import GuestFileUpload from "./GuestFileUpload";
+import Footer from "../Footer";
 
 
 const GuestHomePage = () => {
@@ -19,14 +20,16 @@ useEffect(() => {
   };
 
   return (
-   <div className="min-h-screen flex bg-[var(--primary-bg)] text-[var(--text-color)]">
+   <div className="min-h-screen flex-1 bg-[var(--primary-bg)] text-[var(--text-color)]">
           <Header />
-            <main className="flex-1 p-6 mt-10 max-w-screen-lg bg-[var(--primary-bg)] text-[var(--text-color)] mx-auto">
+            <main className="flex-1 p-6 mt-10 max-w-screen-xl bg-[var(--primary-bg)] text-[var(--text-color)] mx-auto">
             <GuestFileUpload guestFiles={files} updateFiles={updateFiles}/>
-            <h2 className="text-2xl font-bold text-[var(--primary-text)] mb-4 mt-8">File Preview</h2>
-            <p className="text-gray-700 mb-4">Here you can preview your files.</p>
+        
             <GuestFilePreview guestFiles={files} />
+            
             </main>
+            <Footer />
+            
 
           </div>
   );
