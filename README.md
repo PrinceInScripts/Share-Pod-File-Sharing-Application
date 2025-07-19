@@ -94,7 +94,7 @@ Live Demo (Coming Soon) | Powered by MERN + AWS
 
 ## 📂 Project Structure
 
-![Project Structure](./client/src/assets/screenshots/structure.png)
+![Project Structure](./client/src/assets/structure.png)
 
 > _The structure image above shows the separation of the React frontend (`client/`) and Node.js backend (`server/`), including components, routes, controllers, models, and config folders._
 
