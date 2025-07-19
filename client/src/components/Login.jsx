@@ -59,7 +59,7 @@ const Login = () => {
           </div>
           <div className="mt-12 flex flex-col items-center">
             <h1 className="text-2xl xl:text-3xl font-extrabold">
-              Login for Share Pod
+              Login to Paste Box 
             </h1>
             <div className="w-full flex-1 mt-8">
               <div className="mx-auto max-w-xs">
