@@ -69,20 +69,20 @@ Live Demo (Coming Soon) | Powered by MERN + AWS
 ## 📸 Screenshots
 
 ### 📁 User Dashboard
-![User Dashboard](https://pastebox.tech/assets/screenshots/dashboard_user.png)
+![User Dashboard](./client/src/assets/screenshots/user_dashboard.png)
 
 
 ### 📁 Guest Dashboard
-![Guest Dashboard](https://pastebox.tech/assets/screenshots/dashboard.png)
+![Guest Dashboard](./client/src/assets/screenshots/dashboard.png)
 
 ### 📤 File Upload
-![File Uploaded](https://pastebox.tech/assets/screenshots/upload.png)
+![File Uploaded](./client/src/assets/screenshots/upload.png)
 
 ### 📁 File Share
-![Dashboard](https://pastebox.tech/assets/screenshots/share.png)
+![Dashboard](./client/src/assets/screenshots/share.png)
 
 ### 📁 File Share
-![Dashboard](https://pastebox.tech/assets/screenshots/file_preview.png)
+![Dashboard](./client/src/assets/screenshots/file_preview.png)
 
 
 
