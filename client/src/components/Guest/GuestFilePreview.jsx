@@ -100,6 +100,30 @@ const GuestFilePreview = ({ guestFiles }) => {
     currentPage * itemsPerPage
   );
 
+  const downloadQRCode = async (shortUrl) => {
+  const qrUrl = handleShare(shortUrl).qr;
+
+  try {
+    const response = await fetch(qrUrl);
+    const blob = await response.blob();
+    const blobUrl = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.download = "qr-code.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Clean up the blob URL
+    URL.revokeObjectURL(blobUrl);
+  } catch (error) {
+    console.error("QR code download failed:", error);
+    alert("Failed to download QR code. Please try again.");
+  }
+};
+
+
   return (
     <div className="flex flex-col mt-6">
       <div className="flex justify-between items-center mb-4">
@@ -507,14 +531,13 @@ const GuestFilePreview = ({ guestFiles }) => {
                 className="mx-auto border rounded w-32 h-32"
               />
               <div className="flex flex-col items-center mt-4">
-                <a
-                  href={handleShare(shareFile.shortUrl).qr}
-                  download="qr-code.png"
+                <button
+                  onClick={() => downloadQRCode(shareFile.shortUrl)}
                   className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-500 rounded hover:bg-blue-200 transition"
                 >
                   <FaDownload className="text-blue-500 text-2xl" />
                   <span className="font-semibold">Download QR Code</span>
-                </a>
+                </button>
 
                 <button
                   onClick={() => {
