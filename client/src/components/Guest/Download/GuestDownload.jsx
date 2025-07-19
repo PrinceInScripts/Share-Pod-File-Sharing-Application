@@ -29,15 +29,7 @@ const GuestDownload = () => {
 
       if (data.isPasswordProtected) {
         toast.info("🔒 This file is password protected. Please enter the password.");
-      } else {
-        // Automatically trigger download
-        const link = document.createElement("a");
-        link.href = data.downloadUrl;
-        link.download = data.name;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
+      } 
 
     } catch (err) {
       if (err.name !== "AbortError") {
@@ -102,29 +94,45 @@ const GuestDownload = () => {
         <p className="text-[var(--text-color)] text-sm sm:text-base">
           <strong>File Name:</strong> {file.name}
         </p>
-        <div className="w-full">
-          <h2 className="text-lg font-semibold text-[var(--primary-text)] mb-2">File Preview</h2>
+       <div className="w-full">
+  <h2 className="text-lg font-semibold text-[var(--primary-text)] mb-2">File Preview</h2>
 
-          {/* File Preview */}
-          {file.type.startsWith("image/") && (
-            <img src={file.path} alt={file.name} className="w-full h-auto rounded mb-4" />
-          )}
-          {file.type.startsWith("video/") && (
-            <video controls className="w-full h-auto rounded mb-4">
-              <source src={file.path} type={file.type} />
-              Your browser does not support the video tag.
-            </video>
-          )}
-          {file.type.startsWith("audio/") && (
-            <audio controls className="w-full h-auto rounded mb-4">
-              <source src={file.path} type={file.type} />
-              Your browser does not support the audio element.
-            </audio>
-          )}
-          {file.type === "application/pdf" && (
-            <iframe src={file.path} title="PDF Preview" className="w-full h-[400px] rounded mb-4"></iframe>
-          )}
-        </div>
+  {/* Protected Message */}
+  {isProtected && !isVerified ? (
+    <div className="w-full flex flex-col items-center justify-center border-2 border-dashed border-gray-400 p-6 rounded bg-gray-100 dark:bg-gray-800 text-center">
+      <img
+        src="https://cdn-icons-png.flaticon.com/128/18427/18427887.png" // Replace with your actual placeholder image path
+        alt="Protected File"
+        className="w-32 h-32 mb-4"
+      />
+      <p className="text-gray-700 dark:text-gray-200 text-base">
+        🔒 This file is password protected. Please verify to preview or download.
+      </p>
+    </div>
+  ) : (
+    <>
+      {file.type.startsWith("image/") && (
+        <img src={file.path} alt={file.name} className="w-full h-auto rounded mb-4" />
+      )}
+      {file.type.startsWith("video/") && (
+        <video controls className="w-full h-auto rounded mb-4">
+          <source src={file.path} type={file.type} />
+          Your browser does not support the video tag.
+        </video>
+      )}
+      {file.type.startsWith("audio/") && (
+        <audio controls className="w-full h-auto rounded mb-4">
+          <source src={file.path} type={file.type} />
+          Your browser does not support the audio element.
+        </audio>
+      )}
+      {file.type === "application/pdf" && (
+        <iframe src={file.path} title="PDF Preview" className="w-full h-[400px] rounded mb-4"></iframe>
+      )}
+    </>
+  )}
+</div>
+
         <p className="text-[var(--text-color)] text-sm">
           <strong>Uploaded by:</strong> {file.uploadedBy}
         </p>

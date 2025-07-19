@@ -19,7 +19,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, setActiveTab, activeTab }) => {
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       } transition-transform duration-200 ease-in-out w-64 z-40 md:translate-x-0 md:static md:inset-0 bg-[var(--bg-color)] text-[var(--text-color)] shadow-lg py-20`}
     >
-      <div className="flex flex-col h-full border-r border-[var(--border-color)]">
+      <div className="flex flex-col mt-4 h-full border-r border-[var(--border-color)]">
         <nav className="flex-1 px-4 py-6 space-y-2">
           {tabs.map((tab) => (
             <button
